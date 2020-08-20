@@ -1,0 +1,20 @@
+{
+  "name": "booking",
+  "version": "1.0.0",
+  "description": "booking-module",
+  "main": "booking-server.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon booking-server.js"
+  },
+  "author": "mahesh",
+  "license": "ISC"
+}
