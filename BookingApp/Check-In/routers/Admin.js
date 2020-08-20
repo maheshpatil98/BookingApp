@@ -19,14 +19,15 @@ route.get("/getflights",(req,res,next)=>{
 
 route.post("/addflight",auth,(req,res,next)=>{
     const flight = {
-        flightSource: req.body.source,
-        flightDestination : req.body.destination,
-        flightArrival  : req.body.arrival,
-        flightDeparture : req.body.departure
+        flightSource: req.body.flightSource,
+        flightDestination : req.body.flightDestination,
+        flightArrival  : req.body.flightArrival,
+        flightDeparture : req.body.flightDeparture
     }
     Axios.post("http://localhost:7001/flights/",flight)
     .then(result=>{
         console.log(result);
+        res.send(result.data);
     })
     .catch(err=>{
         console.log(err);
