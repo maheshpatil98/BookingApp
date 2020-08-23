@@ -12,7 +12,7 @@ route.post("/signup",(req,res,next)=>{
     .then(user=>{
         if(user.length >= 1){
             return res.status(409).json({
-                message: "Mail Exist"
+                message: "E-Mail ALready Exist"
             });
         }
         else{
@@ -24,6 +24,8 @@ route.post("/signup",(req,res,next)=>{
                 } else{
                     const user = new User({
                         _id: mongoose.Types.ObjectId(),
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
                         email: req.body.email,
                         password : hash
                 });
@@ -31,7 +33,7 @@ route.post("/signup",(req,res,next)=>{
                 .then(result=>{
                     console.log(result);
                     res.status(201).json({
-                        msg: "User created"
+                        message : "User created Succesfully"
                     })
                 })
                 .catch(err=>{
