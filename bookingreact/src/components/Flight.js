@@ -9,9 +9,12 @@ class Flight extends Component {
       source: "",
       destination: "",
       flightData: [],
+      email: "",
+      password: ""
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onLoginSubmit = this.onLoginSubmit.bind(this);
     this.routeChange = this.routeChange.bind(this);
   }
 
@@ -37,10 +40,42 @@ class Flight extends Component {
   }
   //remaining
   routeChange = (e) => {
-    console.log(e);
-    let path = "/book/" + e.flightId;
-    this.props.history.push(path);
+    const a = prompt("This page will directly take u to the sign up page, If you are already a user log in to see status of your flights");
+    if (a == 'CONFIRM') {
+      let path = "/book/" + e.flightId;
+      this.props.history.push(path);
+    } else {
+      window.location.reload();
+    }
   };
+
+
+  onLoginSubmit(e) {
+    e.preventDefault();
+    const Post = {
+      email: this.state.email,
+      password: this.state.password,
+    };
+    fetch("http://localhost:7002/bookings/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(Post)
+    })
+      .then((res) => res.json())
+      .then((rems) => {
+        console.log(rems);
+        alert(`message: ${rems.message}`);
+        if (rems.token) {
+          let path = "/checkstatus";
+          this.props.history.push(path);
+        } else {
+          alert("some error appeared!")
+        }
+      });
+  }
+
 
   onSubmit(e) {
     e.preventDefault();
@@ -81,30 +116,85 @@ class Flight extends Component {
         </td>
       </tr>
     ));
-    return (
-      <div>
-        <form className="container-sm w-25" onSubmit={this.onSubmit}>
-          <input
-            type="text"
-            name="source"
-            value={this.state.source}
-            className="form form-control"
-            onChange={this.onChange}
-          />
-          <br />
 
-          <input
-            type="text"
-            name="destination"
-            value={this.state.destination}
-            className="form form-control"
-            onChange={this.onChange}
-          />
-          <br />
-          <button type="submit" className="btn btn-primary">
-            Search
+    const mystyle = {
+      width: "50%",
+      height: "50%"
+    };
+
+    return (
+
+      <div className="container-sm w-95">
+
+        <br />
+        <div className="d-flex justify-content-between" >
+          <img src={require("../img/img1.jpg")} className="rounded" style={{ height: "35%", width: "35%", justifyContent: "left" }} />
+          <div>
+            <form className="w-30" onSubmit={this.onSubmit} >
+              <div>
+                <label>Source</label>
+                <input
+                  type="text"
+                  name="source"
+                  placeholder="Source"
+                  value={this.state.source}
+                  className="form form-control"
+                  onChange={this.onChange}
+                />
+              </div>
+              <br />
+
+              <div>
+                <label>Destination :</label>
+                <input
+                  type="text"
+                  name="destination"
+                  placeholder="Destination"
+                  value={this.state.destination}
+                  className="form form-control"
+                  onChange={this.onChange}
+                />
+              </div>
+              <br />
+              <button type="submit" className="btn btn-primary">
+                Search
           </button>
-        </form>
+            </form>
+          </div>
+
+          <div>
+            <form className="w-30" onSubmit={this.onLoginSubmit} >
+              <div>
+                <label>Username</label>
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="Enter Username"
+                  value={this.state.email}
+                  className="form form-control"
+                  onChange={this.onChange}
+                />
+              </div>
+              <br />
+
+              <div>
+                <label>Password :</label>
+                <input
+                  type="text"
+                  name="password"
+                  placeholder="Password"
+                  value={this.state.password}
+                  className="form form-control"
+                  onChange={this.onChange}
+                />
+              </div>
+              <br />
+              <button type="submit" className="btn btn-primary">
+                Search
+          </button>
+            </form>
+          </div>
+        </div>
         <hr />
         <div>
           <table className="table table-dark">

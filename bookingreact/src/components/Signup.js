@@ -99,7 +99,7 @@ class Signup extends Component {
           <div>
             <label>Password </label>
             <input
-              type="text"
+              type="password"
               name="password"
               className="form-control"
               placeholder="Password"

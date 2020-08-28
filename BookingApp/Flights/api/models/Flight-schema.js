@@ -7,5 +7,6 @@ const flightSchema = mongoose.Schema({
   flightDestination: { type: String, required: true },
   flightArrival: { type: String, required: true },
   flightDeparture: { type: String, required: true },
+  flightStatus: { type: String, required: true, default: "notArrived" }
 });
 module.exports = mongoose.model("Flight", flightSchema);

@@ -49,7 +49,7 @@ route.post("/signup", (req, res, next) => {
     });
 });
 
-route.post("/login", (req, res, next) => {
+route.post("/passenger/login", (req, res, next) => {
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {

@@ -5,6 +5,7 @@ const Flight = require("../models/Flight-schema");
 
 //getting data
 route.get("/", (req, res, next) => {
+
   Flight.find()
     .exec()
     .then((result) => {
@@ -78,12 +79,12 @@ route.patch("/:id", (req, res, next) => {
 
 route.delete("/:id", (req, res, next) => {
   const id = req.params.id;
-  Flight.remove({ _id: id })
+  Flight.remove({ flightId: id })
     .exec()
     .then((doc) => {
       console.log("deleted succesfully");
       res.status(200).json({
-        msg: "Succesfully deleted ",
+        message: "deleted",
         count: doc.deletedCount,
       });
     })

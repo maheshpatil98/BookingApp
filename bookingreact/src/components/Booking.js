@@ -14,6 +14,8 @@ class Booking extends Component {
       // dob: "",
       Nationality: "",
       status: "Booked",
+      email: "",
+      password: "",
       cheems: {},
     };
     this.onChange = this.onChange.bind(this);
@@ -41,8 +43,10 @@ class Booking extends Component {
       // dob: this.state.dob,
       Nationality: this.state.Nationality,
       status: this.state.status,
+      email: this.state.email,
+      password: this.state.password
     };
-    fetch("http://localhost:7002/bookings/" + id, {
+    fetch("http://localhost:7002/bookings/add/" + id, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -119,6 +123,31 @@ class Booking extends Component {
               onChange={this.onChange}
             />
           </div>
+
+
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="text"
+              name="email"
+              className="form-control"
+              value={this.state.email}
+              onChange={this.onChange}
+            />
+          </div>
+
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              className="form-control"
+              value={this.state.password}
+              onChange={this.onChange}
+            />
+          </div>
+
 
           <div className="form-group">
             <label>Nationality</label>

@@ -1,7 +1,7 @@
 const express = require("express");
 const route = express.Router();
 const auth = require("../middleware/checkAuth");
-const { default: Axios } = require("axios");
+const Axios = require("axios");
 
 route.get("/getflights", (req, res, next) => {
   Axios.get("http://localhost:7001/flights/")
@@ -23,6 +23,7 @@ route.post("/addflight", auth, (req, res, next) => {
     flightDestination: req.body.flightDestination,
     flightArrival: req.body.flightArrival,
     flightDeparture: req.body.flightDeparture,
+    flightStatus: req.body.flightStatus
   };
   Axios.post("http://localhost:7001/flights/", flight)
     .then((result) => {
@@ -38,7 +39,7 @@ route.post("/addflight", auth, (req, res, next) => {
 });
 
 //returns all the passengers in the flight
-route.get("/search/:flightNum", (req, res, next) => {
+route.get("/search/:flightNum", auth, (req, res, next) => {
   const id = req.params.flightNum;
   Axios.get("http://localhost:7002/stats/flight/" + id)
     .then((result) => {
@@ -67,6 +68,69 @@ route.patch("/update/:flightNum", auth, (req, res, next) => {
       });
     });
 });
+
+
+
+
+route.delete("/:id", auth, (req, res, next) => {
+  const fid = req.params.id;
+  Axios.delete("http://localhost:7002/bookings/flight/passengers/" + req.params.id)
+    .then((ress) => {
+      console.log("request executed succesfully");
+      if (ress.data.message == "deleted" || ress.data.message == "none") {
+
+        console.log("Passengers deleted and condition satisfied");
+        Axios.delete("http://localhost:7001/flights/" + fid)
+
+          .then((remms) => {
+            if (remms.data.message == "deleted") {
+              console.log("All condition satisfied and succesfully deleted");
+              res.status(200).json({
+                message: "Passengers and Flight details sucesfully deleted"
+              })
+            }
+          })
+          .catch((err) => {
+            res.status(500).json({
+              error: err
+            })
+          })
+
+      }
+    })
+    .catch(err => console.log(err))
+
+})
+/**
+ *  Axios.delete("http://localhost:7001/flights/" + fid)
+  .then((result) => {
+    console.log(result.data);
+  })
+  .then(() => {
+    fetch("http://localhost:7002/bookings/flight/passengers/" + fid, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json"
+      }
+    })
+  })
+  .then((ress) => {
+    res.status(200).json({
+      msg: "Succesfully deleted "
+      , message: "deleted"
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json({
+      error: err,
+    });
+
+
+  });
+
+ */
+
 
 //route.delete();
 
