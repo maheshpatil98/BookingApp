@@ -25,7 +25,6 @@ route.post("/signup", (req, res, next) => {
               _id: mongoose.Types.ObjectId(),
               firstName: req.body.firstName,
               lastName: req.body.lastName,
-              role: req.body.role,
               email: req.body.email,
               password: hash,
             });
@@ -35,6 +34,7 @@ route.post("/signup", (req, res, next) => {
                 console.log(result);
                 res.status(201).json({
                   message: "User created Succesfully",
+
                 });
               })
               .catch((err) => {
@@ -78,6 +78,7 @@ route.post("/passenger/login", (req, res, next) => {
           return res.status(200).json({
             message: "Auth Succesful",
             token: token,
+            newuser: user[0],
           });
         }
         res.status(401).json({

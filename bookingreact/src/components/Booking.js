@@ -61,12 +61,16 @@ class Booking extends Component {
           `Booked succesfully with booking ID ${this.state.cheems.bookId} and flight number ${this.state.cheems.flightID} please verify following details
           Status: ${this.state.cheems.status}, first name : ${this.state.cheems.firstname}, last name: ${this.state.cheems.lastname} and phone no: ${this.state.cheems.number}`
         );
+        let path = "/checkstatus" + rems.bookId;
+        this.props.history.push(path);
       });
   }
 
   render() {
     return (
       <div className="container-sm w-50">
+        <hr />
+        <h1>WELCOME TO THE SIGN UP PAGE</h1>
         <hr />
         <form onSubmit={this.onSubmit}>
           <div className="form-group">

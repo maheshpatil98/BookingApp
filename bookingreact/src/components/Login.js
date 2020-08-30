@@ -22,8 +22,9 @@ class Login extends Component {
 
   //remaining
   routeChange = (e) => {
-    console.log(e.token);
-    let path = "/search/" + e.token;
+    console.log(e);
+    JSON.stringify(e);
+    let path = "/search/" + e.token + "/" + e.newuser.firstName;
     this.props.history.push(path);
   };
 
@@ -33,18 +34,19 @@ class Login extends Component {
       email: this.state.email,
       password: this.state.password,
     };
-    fetch("http://localhost:7003/users/login", {
+    fetch("http://localhost:7003/users/passenger/login", {
       method: "POST",
       headers: {
         "content-type": "application/json"
       },
       body: JSON.stringify(Post)
     })
-      .then((res) => res.json())
+      .then(ress => ress.json())
       .then((rems) => {
+
         console.log(rems);
         alert(`message: ${rems.message}`);
-        this.setState((this.state.cheems = rems));
+        this.setState({ cheems: rems });
         this.routeChange(rems);
       });
   }
@@ -54,31 +56,37 @@ class Login extends Component {
     //  console.log(this.props.pao.loggedIn);
     return (
       <div className="container-sm w-25">
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="text"
-              name="email"
-              className="form-control"
-              value={this.state.email}
-              onChange={this.onChange}
-            />
-          </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              value={this.state.password}
-              onChange={this.onChange}
-            />
-          </div>
-          <br />
-          <button className="btn btn-success" type="submit">
-            Done
+        <br />
+        <hr />
+        <form className="card w-30 mr-auto" style={{ textAlign: "center", width: "18rem" }} onSubmit={this.onSubmit}>
+          <div className="card-body " style={{ textAlign: "center", alignContent: "center", alignItems: "center" }}>
+            <h5 className="card-title">Welcome Admin</h5>
+            <h6 className="card-subtitle mb-2 text-muted">Please Login </h6>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="text"
+                name="email"
+                className="form-control"
+                value={this.state.email}
+                onChange={this.onChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                className="form-control"
+                value={this.state.password}
+                onChange={this.onChange}
+              />
+            </div>
+            <br />
+            <button className="btn btn-success" type="submit">
+              Done
           </button>
+          </div>
         </form>
         <hr />
         <div>

@@ -28,87 +28,63 @@ import {
   Button,
 } from "react-bootstrap";
 
-// class App extends Component {
-
-
-
-//   onSubmit(e) {
-//     e.preventDefault();
-//     let History = useHistory();
-//     History.push("/flights/" + this.state.source + "/" + this.state.destination);
-//   }
-
-//   render() {
-
-//   }
-// }
-
 
 class App extends Component {
 
-
-
-
   render() {
 
-
-
-
     return (
-      <div>
+      <div >
         <Router>
           <Navbar bg="dark" variant="dark">
-            <img src={require("./img/book.png")} className="rounded" style={{ height: "5vh", width: "5vh", margin: "5px 5px" }} />
-            <Navbar.Brand href="http://localhost:3000">AirBooking.in</Navbar.Brand>
+            <img src={require("./img/book.png")} className="rounded" style={{ height: "9vh", width: "9vh", margin: "5px 5px" }} />
+            <img src={require("./img/goair3.png")} className="rounded" style={{ height: "9vh", width: "25vh", margin: "5px 5px" }} />
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <br />
             <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto">
-                <Nav.Link href="http://localhost:3000/flights">Flights</Nav.Link>
-                <Nav.Link href="http://localhost:3000/login">Check-In</Nav.Link>
-                <NavDropdown title="Search by" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="#action/3.1">Flight ID</NavDropdown.Item>
-                  <NavDropdown.Item href="http://localhost:3000/search/id">
-                    Booking ID
-            </NavDropdown.Item>
-                </NavDropdown>
+              <Nav className="mr-auto d-flex justify-content-between">
+                <NavLink to="/flights" style={{ textAlign: "center", margin: "5px 5px", fontSize: "15px" }} className="btn btn-outline-light" >Home</NavLink>
+
+                <NavLink to="/about" style={{ textAlign: "center", margin: "5px 5px" }} className="btn btn-outline-light">About Us</NavLink>
               </Nav>
-              <Nav variant="pills" activeKey="1">
-                <Nav.Link eventKey="2" href="http://localhost:3000/signup">SignUp</Nav.Link>
-                <Nav.Link eventKey="1" href="http://localhost:3000/login">Login</Nav.Link>
-              </Nav>
+
             </Navbar.Collapse>
           </Navbar>
+
 
           <Route path="/login">
             <Login />
           </Route>
 
+
           <Route path="/signup">
             <Signup />
           </Route>
 
-          <Route path="/checkstatus">
-            <CheckStatus />
+
+          <Route path="/checkstatus/:bookid" children={<CheckStatus />} />
+
+
+          <Route path="/bookingsinflight/:id" children={<BookingsInFlight />} />
+
+          <Route exact path="/" >
+            <Redirect to="/flights" />
           </Route>
 
-          <Route path="/bookingsinflight">
-            <BookingsInFlight />
-          </Route>
-
-          <Redirect exact from="/" to="/flights" component={<Flight />} />
-
-          <Route def path="/flights" children={<Flight />} />
-
+          <Route path="/flights" children={<Flight />} />
+          <Route path="/home" children={<Home />} />
 
           <Route path="/book/:id" children={<Booking />} />
 
-          <Route path="/search/:token" children={<SearchId />} />
+          <Route path="/search/:token/:name" children={<SearchId />} />
 
           <Route path="/addflight/:id" children={<AddFlight />} />
 
 
 
+
         </Router>
+
       </div>
     )
   }
@@ -116,19 +92,3 @@ class App extends Component {
 
 export default App;
 
-
-
-/**
- * <thead>
-                <tr>
-                  <td>Flight Number</td>
-                  <td>flight Source</td>
-                  <td>flight Destination</td>
-                  <td>flight Arrival</td>
-                  <td>flight Departure</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </thead>
-              <tbody>{flightList}</tbody>
- */

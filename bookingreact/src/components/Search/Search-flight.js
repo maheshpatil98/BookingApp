@@ -31,7 +31,7 @@ class SearchId extends Component {
   }
 
   goingToBookers() {
-    let path = "/bookingsinflight";
+    let path = "/bookingsinflight/" + this.props.match.params.token;
     this.props.history.push(path);
   }
 
@@ -123,27 +123,28 @@ class SearchId extends Component {
     return (
       <div className="container-sm w-90">
 
-        <div style={{ display: "flex", flexDirection: "row", backgroundColor: "gray" }}>
-          <button className="btn btn-success" onClick={this.goingToAdd} >Add Flight</button> <hr />
-          <button className="btn btn-success">Sort</button>
-          <button className="btn btn-success" onClick={this.goingToLogout}>Logout</button>
-          <button className="btn btn-success" onClick={this.goingToBookers}>Bookers</button>
-        </div>
+        <div style={{ display: "flex", flexDirection: "row", backgroundColor: "#121212" }}>
+          <button className="btn btn-secondary" style={{ margin: "10px 10px" }} onClick={this.goingToAdd} >Add Flight</button> <hr />
+          <h4 style={{ color: "white", margin: "10px 10px", float: "right" }}>Welcome {this.props.match.params.name}</h4>
+          <button className="btn btn-secondary" style={{ margin: "10px 10px" }}>Sort</button>
+          <button className="btn btn-secondary" style={{ margin: "10px 10px" }} onClick={this.goingToBookers}>Bookers</button>
+          <button className="btn btn-secondary" style={{ margin: "10px 10px" }} onClick={this.goingToLogout}>Logout</button>
 
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>search by flight Id</label>
+        </div>
+        <br />
+        <form onSubmit={this.onSubmit} className="d-flex justify-content-between w-90">
+          <div className="form-group" style={{ width: "170vh" }}>
             <input
               type="text"
               name="flightId"
-              placeholder="insert flight ID"
+              placeholder="Search by Flight ID"
               className="form-control"
               value={this.state.flightId}
               onChange={this.onChange}
             />
           </div>
-          <button className="btn btn-success" type="submit">
-            Done
+          <button className="btn btn-success" style={{ height: "6vh", width: "10vh" }} type="submit">
+            Go
           </button>
         </form>
 

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, NavLink } from "react-router-dom";
+import { Nav } from "react-bootstrap";
 
 class Flight extends Component {
   constructor(props) {
@@ -68,7 +69,7 @@ class Flight extends Component {
         console.log(rems);
         alert(`message: ${rems.message}`);
         if (rems.token) {
-          let path = "/checkstatus";
+          let path = "/checkstatus/" + rems.id;
           this.props.history.push(path);
         } else {
           alert("some error appeared!")
@@ -117,100 +118,120 @@ class Flight extends Component {
       </tr>
     ));
 
-    const mystyle = {
-      width: "50%",
-      height: "50%"
-    };
+
 
     return (
 
-      <div className="container-sm w-95">
+      <div className="container-sm mr-auto">
 
         <br />
+        <img src={require("../img/journeybegin.png")} className="rounded" style={{ height: "12rem", textAlign: "center", width: "48rem" }} />
+        <img src={require("../img/img1.jpg")} className="rounded" style={{ height: "12rem", textAlign: "center", width: "18rem" }} />
         <div className="d-flex justify-content-between" >
-          <img src={require("../img/img1.jpg")} className="rounded" style={{ height: "35%", width: "35%", justifyContent: "left" }} />
           <div>
-            <form className="w-30" onSubmit={this.onSubmit} >
-              <div>
-                <label>Source</label>
-                <input
-                  type="text"
-                  name="source"
-                  placeholder="Source"
-                  value={this.state.source}
-                  className="form form-control"
-                  onChange={this.onChange}
-                />
-              </div>
-              <br />
+            <form className="card w-30 mr-auto" style={{ textAlign: "center" }} onSubmit={this.onSubmit} >
+              <div className="card-body " style={{ textAlign: "center", alignContent: "center", alignItems: "center" }}>
+                <h5 className="card-title">Start Your Journey Today !</h5>
+                <h6 className="card-subtitle mb-2 text-muted">Search Flight Here</h6>
+                <div>
+                  <label>Source</label>
+                  <input
+                    type="text"
+                    name="source"
+                    placeholder="Source"
+                    value={this.state.source}
+                    className="form form-control"
+                    onChange={this.onChange}
+                  />
+                </div>
+                <br />
 
-              <div>
-                <label>Destination :</label>
-                <input
-                  type="text"
-                  name="destination"
-                  placeholder="Destination"
-                  value={this.state.destination}
-                  className="form form-control"
-                  onChange={this.onChange}
-                />
-              </div>
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Search
+                <div>
+                  <label>Destination :</label>
+                  <input
+                    type="text"
+                    name="destination"
+                    placeholder="Destination"
+                    value={this.state.destination}
+                    className="form form-control"
+                    onChange={this.onChange}
+                  />
+                </div>
+                <br />
+                <button type="submit" className="btn btn-primary">
+                  Search
           </button>
+              </div>
             </form>
           </div>
 
-          <div>
-            <form className="w-30" onSubmit={this.onLoginSubmit} >
-              <div>
-                <label>Username</label>
-                <input
-                  type="text"
-                  name="email"
-                  placeholder="Enter Username"
-                  value={this.state.email}
-                  className="form form-control"
-                  onChange={this.onChange}
-                />
-              </div>
-              <br />
+          <img src={require("../img/flyaway.png")} className="rounded" style={{ height: "12rem", textAlign: "center", width: "18rem" }} />
 
-              <div>
-                <label>Password :</label>
-                <input
-                  type="text"
-                  name="password"
-                  placeholder="Password"
-                  value={this.state.password}
-                  className="form form-control"
-                  onChange={this.onChange}
-                />
-              </div>
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Search
+          <div className="container-s" >
+            <form className="card w-30 mr-auto" style={{ textAlign: "center", width: "18rem" }} onSubmit={this.onLoginSubmit} >
+              <div className="card-body " style={{ textAlign: "center", alignContent: "center", alignItems: "center" }}>
+                <h5 className="card-title">Already a user ?</h5>
+                <h6 className="card-subtitle mb-2 text-muted">Login</h6>
+                <div>
+                  <label>Username</label>
+                  <input
+                    type="text"
+                    name="email"
+                    placeholder="Enter Username"
+                    value={this.state.email}
+                    className="form form-control"
+                    onChange={this.onChange}
+                  />
+                </div>
+                <br />
+
+                <div>
+                  <label>Password :</label>
+                  <input
+                    type="text"
+                    name="password"
+                    placeholder="Password"
+                    value={this.state.password}
+                    className="form form-control"
+                    onChange={this.onChange}
+                  />
+                </div>
+                <br />
+                <button type="submit" className="btn btn-primary">
+                  Search
           </button>
+              </div>
             </form>
           </div>
         </div>
         <hr />
         <div>
-          <table className="table table-dark">
+          <table className="table table-hover">
             <thead>
               <tr>
                 <td>Flight Number</td>
-                <td>flight Source</td>
-                <td>flight Destination</td>
-                <td>flight Arrival</td>
-                <td>flight Departure</td>
-                <td></td>
+                <td>Flight Source</td>
+                <td>Flight Destination</td>
+                <td>Flight Arrival</td>
+                <td>Flight Departure</td>
+                <td>Book 'em</td>
                 <td></td>
               </tr>
             </thead>
             <tbody>{flightList}</tbody>
           </table>
+          <br />
+          <hr />
+          <div style={{ textAlign: "center", margin: "30px", float: "right" }}>
+            <h6>For Administrator and Other Bussiness Related Users: </h6>
+
+            <NavLink to="/signup" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Signup</NavLink>
+
+            {/* <Nav.Link eventKey="1" href="http://localhost:3000/login">Login</Nav.Link> */}
+            <NavLink to="/login" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Login</NavLink>
+            <p>All Terms and Conditions Apply*</p>
+          </div>
+
         </div>
       </div>
     );

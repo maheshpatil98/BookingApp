@@ -18,13 +18,13 @@ route.get("/", (req, res, next) => {
         passengers: result.map((doc) => {
           return {
             _id: doc._id,
-            flightId: doc.flightId,
+            flightID: doc.flightID,
             firstname: doc.firstname,
             lastname: doc.lastname,
             number: doc.number,
-            dob: doc.dob,
-            nationality: doc.nationality,
-            flight: doc.flightId,
+            email: doc.email,
+            Nationality: doc.Nationality,
+            bookId: doc.bookId,
             status: doc.status,
           };
         }),
@@ -114,7 +114,7 @@ route.patch("/:Id", (req, res, next) => {
   for (const ops of req.body) {
     updateOps[ops.propName] = ops.value;
   }
-  Passenger.update({ _id: id }, { $set: updateOps })
+  Passenger.update({ bookId: id }, { $set: updateOps })
     .exec()
     .then((result) => {
       console.log(result);
@@ -129,14 +129,14 @@ route.patch("/:Id", (req, res, next) => {
 });
 
 //deletes a certain id of passenger
-route.delete("/:Id", (req, res, next) => {
-  const id = req.params.Id;
-  Passenger.remove({ _id: id })
+route.delete("/:bookid", (req, res, next) => {
+  const id = req.params.bookid;
+  Passenger.remove({ bookId: id })
     .exec()
     .then((doc) => {
       console.log(doc);
       res.status(200).json({
-        msg: "Succesfully deleted ",
+        message: "Succesfully deleted ",
         count: doc.deletedCount,
       });
     })
@@ -181,6 +181,7 @@ route.post("/login", (req, res, next) => {
           return res.status(200).json({
             message: "Auth Succesful",
             token: token,
+            id: user[0].bookId
           });
         }
         res.status(401).json({
@@ -202,23 +203,7 @@ route.get("/get/status/:id", (req, res, next) => {
   Passenger.find({ bookId: bID })
     .exec()
     .then((result) => {
-      if (result.length > 1) {
-        res.status(409).json({
-          message: "multiple ID exist in the database"
-        })
-      } else {
-        Passenger.find({ flightID: result[0].flightID })
-          .exec()
-          .then((ress) => {
-            res.status(200).json(ress);
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-              error: err
-            });
-          });
-      }
+      res.status(200).json(result);
     })
     .catch((err) => {
       console.log(err);

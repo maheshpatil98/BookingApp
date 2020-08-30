@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { DropdownButton, Dropdown } from "react-bootstrap";
+import { withRouter } from "react-router-dom";
 
 class Signup extends Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class Signup extends Component {
       password: "",
       firstName: "",
       lastName: "",
-      role: "",
+
       cheems: {},
     };
 
@@ -36,6 +37,11 @@ class Signup extends Component {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
     };
+
+    const nPost = {
+      email: this.state.email,
+      password: this.state.password,
+    }
     fetch("http://localhost:7003/users/signup", {
       method: "POST",
       headers: {
@@ -46,9 +52,33 @@ class Signup extends Component {
       .then((res) => res.json())
       .then((rems) => {
         console.log(rems);
-        this.setState((this.state.cheems = rems));
-        console.log(this.state.cheems);
-      });
+        alert("Created Admin Succesfully")
+        fetch("http://localhost:7003/users/passenger/login", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(nPost)
+        })
+          .then(ress => ress.json())
+          .then((rems) => {
+
+            console.log(rems);
+            alert(`message: ${rems.message}`);
+            this.setState({ cheems: rems });
+            let path = "/search/" + rems.token + "/" + rems.newuser.firstName;
+            this.props.history.push(path);
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(`error occured ${err}`)
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(`error occured ${err}`)
+      })
+
   }
 
   render() {
@@ -110,16 +140,6 @@ class Signup extends Component {
           </div>
           <br />
 
-          <div>
-            <label>
-              Select User :
-              <select value={this.state.value} onChange={this.onHandleChange}>
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </label>
-          </div>
-
           <br />
           <button className="btn btn-success" type="submit">
             Done
@@ -134,4 +154,9 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+export default withRouter(Signup);
+
+/**
+ * let path = "/search/" + rems.token + "/" + rems.newuser.firstName;
+        this.props.history.push(path);
+ */

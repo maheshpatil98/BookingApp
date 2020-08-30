@@ -1,0 +1,116 @@
+import React, { Component } from 'react';
+import { withRouter } from "react-router-dom";
+
+class BookingsInFlight extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            bookData: [{}],
+            tokenn: this.props.match.params.id
+        };
+
+    }
+
+
+    routeChangeDelete(flight) {
+        console.log(flight.flightId);
+        fetch("http://localhost:7003/flights/pass/delete/" + flight.bookId, {
+            method: "DELETE",
+            headers: {
+                "content-type": "application/json",
+                "Authorization": "Bearer " + this.state.tokenn
+            }
+        })
+            .then((dat) => {
+                //console.log(dat);
+                if (dat) {
+                    alert("Data deleted Successfully");
+                    window.location.reload();
+                }
+                else {
+                    alert("Error Occured");
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
+
+    componentWillMount() {
+        fetch("http://localhost:7002/bookings/", {
+            method: "GET"
+        })
+            .then((response) =>
+                response.json().catch((err) => {
+                    console.err(`'${err}' happened!`);
+                    return {};
+                })
+            )
+            .then((json) => {
+                console.log("parsed json: ", json);
+                console.log(this.state.bookData);
+                this.setState({ bookData: json.passengers });
+                console.log(this.state.bookData);
+            })
+            .catch((err) => {
+                console.log("fetch request failed: ", err);
+            });
+    }
+
+    render() {
+
+        let path = "/search/" + this.props.match.params.id;
+
+        const BookList = this.state.bookData.map((fly) => (
+            <tr key={fly._id}>
+                <td>{fly.bookId}</td>
+                <td>{fly.firstname}</td>
+                <td>{fly.lastname}</td>
+                <td>{fly.Nationality}</td>
+                <td>{fly.email}</td>
+                <td>{fly.flightID}</td>
+                <td>{fly.status}</td>
+                <td>
+                    <button
+                        className="btn btn-danger"
+                        onClick={() => this.routeChangeDelete(fly)}
+                    >
+                        Delete
+          </button>
+                </td>
+            </tr>
+        ));
+
+
+
+
+        return (
+            <div>
+                <div style={{ backgroundColor: "#121212" }}>
+                    <button className="btn btn-primary" onClick={() => { this.props.history.push(path); }}>Back</button>
+                </div>
+                <div>
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <td>book ID</td>
+                                <td>First Name</td>
+                                <td>Last Name</td>
+                                <td>Nationality</td>
+                                <td>Email</td>
+                                <td>FlightID</td>
+                                <td>Status</td>
+                            </tr>
+                        </thead>
+                        <tbody>{BookList}</tbody>
+                    </table>
+                </div>
+            </div>
+        )
+    }
+}
+
+export default withRouter(BookingsInFlight);

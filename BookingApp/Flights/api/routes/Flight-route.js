@@ -5,10 +5,11 @@ const Flight = require("../models/Flight-schema");
 
 //getting data
 route.get("/", (req, res, next) => {
-
+  console.log("req andar ghusi hai");
   Flight.find()
     .exec()
     .then((result) => {
+      console.log("data retriive kiya hai");
       res.status(200).json(result);
     })
     .catch((err) => console.log(err));

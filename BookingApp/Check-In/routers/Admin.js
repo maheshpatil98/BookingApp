@@ -100,38 +100,27 @@ route.delete("/:id", auth, (req, res, next) => {
     })
     .catch(err => console.log(err))
 
-})
-/**
- *  Axios.delete("http://localhost:7001/flights/" + fid)
-  .then((result) => {
-    console.log(result.data);
-  })
-  .then(() => {
-    fetch("http://localhost:7002/bookings/flight/passengers/" + fid, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json"
+});
+
+
+
+
+
+route.delete("/pass/delete/:bookid", auth, (req, res, next) => {
+  const id = req.params.bookid;
+  Axios.delete("http://localhost:7002/bookings/" + id)
+    .then((remms) => {
+      console.log("All condition satisfied and succesfully deleted");
+      res.status(200).json({
+        message: "Passenger sucesfully deleted"
       }
+      )
     })
-  })
-  .then((ress) => {
-    res.status(200).json({
-      msg: "Succesfully deleted "
-      , message: "deleted"
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-    res.status(500).json({
-      error: err,
-    });
-
-
-  });
-
- */
-
-
-//route.delete();
+    .catch((err) => {
+      res.status(500).json({
+        error: err
+      })
+    })
+});
 
 module.exports = route;

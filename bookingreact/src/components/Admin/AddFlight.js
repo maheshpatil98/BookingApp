@@ -57,6 +57,8 @@ class AddFlight extends Component {
               Status: ${this.state.cheems.flight.flightDestination}, first name : ${this.state.cheems.flight.flightArrival}, last name: ${this.state.cheems.flight.flightDeparture} and phone no: ${this.state.cheems.flight.flightStatus}`
                 );
             });
+        let path = "/search/" + this.props.match.params.id;
+        this.props.history.push(path);
     }
 
     render() {
