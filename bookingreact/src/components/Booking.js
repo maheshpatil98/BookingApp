@@ -11,7 +11,6 @@ class Booking extends Component {
       firstname: "",
       lastname: "",
       number: "",
-      // dob: "",
       Nationality: "",
       status: "Booked",
       email: "",
@@ -40,7 +39,6 @@ class Booking extends Component {
       firstname: this.state.firstname,
       lastname: this.state.lastname,
       number: this.state.number,
-      // dob: this.state.dob,
       Nationality: this.state.Nationality,
       status: this.state.status,
       email: this.state.email,
@@ -59,9 +57,9 @@ class Booking extends Component {
         this.setState((this.state.cheems = rems));
         alert(
           `Booked succesfully with booking ID ${this.state.cheems.bookId} and flight number ${this.state.cheems.flightID} please verify following details
-          Status: ${this.state.cheems.status}, first name : ${this.state.cheems.firstname}, last name: ${this.state.cheems.lastname} and phone no: ${this.state.cheems.number}`
+          Status: ${this.state.cheems.status}, userId:${this.state.cheems.userId},first name : ${this.state.cheems.firstname}, last name: ${this.state.cheems.lastname} and phone no: ${this.state.cheems.number}`
         );
-        let path = "/checkstatus" + rems.bookId;
+        let path = "/checkstatus/" + rems.userId;
         this.props.history.push(path);
       });
   }
@@ -82,7 +80,7 @@ class Booking extends Component {
               required
               className="form-control"
               placeholder="First Name"
-              // pattern="[A-Za-z]{3,}"
+              pattern="[A-Za-z]{3,}"
               value={this.state.firstName}
               onChange={this.onChange}
             />
@@ -95,23 +93,12 @@ class Booking extends Component {
               name="lastname"
               className="form-control"
               placeholder="Last Name"
-              // pattern="[A-Za-z]{3,}"
+              pattern="[A-Za-z]{3,}"
               required
               value={this.state.lastName}
               onChange={this.onChange}
             />
           </div>
-
-          {/* <div className="form-group">
-            <label>Date of Birth</label>
-            <br />
-            <DatePicker
-              locale="es"
-              dateFormat="yyyy-mm-dd"
-              selected={this.state.dob}
-              onChange={this.handleChange}
-            />
-          </div> */}
 
           <div className="form-group">
             <label>Phone Number</label>
@@ -121,7 +108,7 @@ class Booking extends Component {
               name="number"
               className="form-control"
               placeholder="Phone Number"
-              //  pattern="{10}"
+              pattern="{10}"
               required
               value={this.state.number}
               onChange={this.onChange}

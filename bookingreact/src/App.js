@@ -65,7 +65,7 @@ class App extends Component {
           <Route path="/checkstatus/:bookid" children={<CheckStatus />} />
 
 
-          <Route path="/bookingsinflight/:id" children={<BookingsInFlight />} />
+          <Route path="/bookingsinflight/:id/:name" children={<BookingsInFlight />} />
 
           <Route exact path="/" >
             <Redirect to="/flights" />
@@ -78,7 +78,7 @@ class App extends Component {
 
           <Route path="/search/:token/:name" children={<SearchId />} />
 
-          <Route path="/addflight/:id" children={<AddFlight />} />
+          <Route path="/addflight/:id/:name" children={<AddFlight />} />
 
 
 

@@ -179,6 +179,7 @@ class Flight extends Component {
                     name="email"
                     placeholder="Enter Username"
                     value={this.state.email}
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                     className="form form-control"
                     onChange={this.onChange}
                   />
@@ -192,6 +193,7 @@ class Flight extends Component {
                     name="password"
                     placeholder="Password"
                     value={this.state.password}
+                    pattern=".{7,}"
                     className="form form-control"
                     onChange={this.onChange}
                   />
@@ -227,7 +229,7 @@ class Flight extends Component {
 
             <NavLink to="/signup" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Signup</NavLink>
 
-            {/* <Nav.Link eventKey="1" href="http://localhost:3000/login">Login</Nav.Link> */}
+
             <NavLink to="/login" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Login</NavLink>
             <p>All Terms and Conditions Apply*</p>
           </div>

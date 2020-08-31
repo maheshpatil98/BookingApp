@@ -50,7 +50,7 @@ class AddFlight extends Component {
             .then((res) => res.json())
             .then((rems) => {
                 console.log(rems);
-                this.setState((this.state.cheems = rems));
+                this.setState({ cheems: rems });
                 console.log(this.state.cheems.flight);
                 alert(
                     `Booked succesfully with flight ID ${this.state.cheems.flight.flightId} and flight Source ${this.state.cheems.flight.flightSource} please verify following details
@@ -61,9 +61,15 @@ class AddFlight extends Component {
         this.props.history.push(path);
     }
 
+
+
     render() {
+        let path = "/search/" + this.state.tokenn + "/" + this.props.match.params.name;
         return (
-            <div className="container-sm w-50">
+            <div className="container-sm w-90">
+                <div style={{ display: "flex", flexDirection: "row", backgroundColor: "#121212", margin: "10px 10px" }}>
+                    <button className="btn btn-primary" onClick={() => { this.props.history.push(path); }}>Back</button>
+                </div>
                 <hr />
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
@@ -75,7 +81,7 @@ class AddFlight extends Component {
                             required
                             className="form-control"
                             placeholder="Add a Flight Source"
-                            // pattern="[A-Za-z]{3,}"
+                            pattern="[A-Za-z]{3,}"
                             value={this.state.flightSource}
                             onChange={this.onChange}
                         />
@@ -88,7 +94,7 @@ class AddFlight extends Component {
                             name="flightDestination"
                             className="form-control"
                             placeholder="Add Destiantion"
-                            // pattern="[A-Za-z]{3,}"
+                            pattern="[A-Za-z]{3,}"
                             required
                             value={this.state.flightDestination}
                             onChange={this.onChange}
@@ -113,7 +119,6 @@ class AddFlight extends Component {
                             name="flightArrival"
                             className="form-control"
                             placeholder="Add Arrival Time"
-                            // pattern="[A-Za-z]{3,}"
                             required
                             value={this.state.flightArrival}
                             onChange={this.onChange}
@@ -128,7 +133,6 @@ class AddFlight extends Component {
                             name="flightDeparture"
                             className="form-control"
                             placeholder="Add Departure Time"
-                            //  pattern="{10}"
                             required
                             value={this.state.flightDeparture}
                             onChange={this.onChange}
@@ -143,7 +147,6 @@ class AddFlight extends Component {
                             name="flightStatus"
                             className="form-control"
                             placeholder="Enter pre-defined status for flight"
-                            //    pattern="[A-Za-z]{3,}"
                             required
                             value={this.state.flightStatus}
                             onChange={this.onChange}

@@ -53,7 +53,7 @@ class Login extends Component {
 
   render() {
 
-    //  console.log(this.props.pao.loggedIn);
+
     return (
       <div className="container-sm w-25">
         <br />
@@ -68,7 +68,9 @@ class Login extends Component {
                 type="text"
                 name="email"
                 className="form-control"
+                placeholder="Enter Email"
                 value={this.state.email}
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                 onChange={this.onChange}
               />
             </div>
@@ -77,6 +79,8 @@ class Login extends Component {
               <input
                 type="password"
                 name="password"
+                pattern=".{7,}"
+                placeholder="Enter Password"
                 className="form-control"
                 value={this.state.password}
                 onChange={this.onChange}

@@ -41,7 +41,7 @@ route.post("/addflight", auth, (req, res, next) => {
 //returns all the passengers in the flight
 route.get("/search/:flightNum", auth, (req, res, next) => {
   const id = req.params.flightNum;
-  Axios.get("http://localhost:7002/stats/flight/" + id)
+  Axios.get("http://localhost:7001/flights/" + id)
     .then((result) => {
       console.log(result);
       res.send(result.data);
@@ -56,7 +56,7 @@ route.get("/search/:flightNum", auth, (req, res, next) => {
 
 route.patch("/update/:flightNum", auth, (req, res, next) => {
   const id = req.params.flightNum;
-  Axios.get("http://localhost:7001/stats/flight/" + id)
+  Axios.get("http://localhost:7001/flights/" + id)
     .then((result) => {
       console.log(result);
       res.send(result.data);
@@ -69,6 +69,33 @@ route.patch("/update/:flightNum", auth, (req, res, next) => {
     });
 });
 
+
+route.patch("/update/:flightNum", auth, (req, res, next) => {
+  const id = req.params.flightNum;
+  const Post = [{
+    propName: req.body.propName,
+    value: req.body.value
+  }]
+  fetch("http://localhost:7001/flights/" + id, {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(Post),
+  })
+    .then((result) => {
+      console.log(result);
+      res.status(200).json({
+        message: "Updated"
+      })
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
 
 
 
@@ -106,8 +133,8 @@ route.delete("/:id", auth, (req, res, next) => {
 
 
 
-route.delete("/pass/delete/:bookid", auth, (req, res, next) => {
-  const id = req.params.bookid;
+route.delete("/pass/delete/:userid", auth, (req, res, next) => {
+  const id = req.params.userid;
   Axios.delete("http://localhost:7002/bookings/" + id)
     .then((remms) => {
       console.log("All condition satisfied and succesfully deleted");

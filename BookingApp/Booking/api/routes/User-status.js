@@ -23,12 +23,11 @@ route.get("/:bookId", (req, res, next) => {
 
 // total passengers in the flight with flight status
 route.get("/flight/:flightId", (req, res, next) => {
-  fid = req.params.flightId;
+  const fid = req.params.flightId;
 
   var query = { flightID: { $regex: fid } };
 
   Passenger.find(query)
-    .select("bookId firstname lastname status")
     .exec()
     .then((result) => {
       console.log(result);

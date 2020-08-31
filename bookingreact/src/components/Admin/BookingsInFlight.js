@@ -25,7 +25,8 @@ class BookingsInFlight extends Component {
 
     routeChangeDelete(flight) {
         console.log(flight.flightId);
-        fetch("http://localhost:7003/flights/pass/delete/" + flight.bookId, {
+        console.log(flight.userId);
+        fetch("http://localhost:7003/flights/pass/delete/" + flight.userId, {
             method: "DELETE",
             headers: {
                 "content-type": "application/json",
@@ -127,7 +128,7 @@ class BookingsInFlight extends Component {
                     </div>
                     <br />
                     <button type="submit" className="btn btn-primary">
-                        Search
+                        Update
     </button>
                 </form>
             </div>);
@@ -138,7 +139,7 @@ class BookingsInFlight extends Component {
     }
     render() {
 
-        let path = "/search/" + this.state.tokenn;
+        let path = "/search/" + this.state.tokenn + "/" + this.props.match.params.name;
 
 
         const BookList = this.state.bookData.map((fly) => (
@@ -161,8 +162,8 @@ class BookingsInFlight extends Component {
         ));
 
         return (
-            <div className="container-sm w-80">
-                <div style={{ backgroundColor: "#121212" }}>
+            <div className="container-sm w-90 justify-content-between">
+                <div style={{ display: "flex", flexDirection: "row", backgroundColor: "#121212", margin: "10px 10px" }}>
                     <button className="btn btn-primary" onClick={() => { this.props.history.push(path); }}>Back</button>
                 </div>
                 <div className="d-flex justify-content-between">

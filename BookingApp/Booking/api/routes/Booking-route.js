@@ -19,6 +19,7 @@ route.get("/", (req, res, next) => {
           return {
             _id: doc._id,
             flightID: doc.flightID,
+            userId: doc.userId,
             firstname: doc.firstname,
             lastname: doc.lastname,
             number: doc.number,
@@ -38,7 +39,42 @@ route.get("/", (req, res, next) => {
     });
 });
 
-//Books a certain flight whose id is passed through parameters
+//books a flight
+route.post("/book/:id/:uid", (req, res, next) => {
+  const nid = req.params.id;
+  const uId = req.params.uid;
+  const newPassenger = new Passenger({
+    _id: mongoose.Types.ObjectId(),
+    bookId:
+      req.body.firstname.toUpperCase().slice(0, 3) +
+      nid +
+      new Date().getSeconds(),
+    userId: uId,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    number: req.body.number,
+    email: req.body.email,
+    password: req.body.password,
+    Nationality: req.body.Nationality,
+    flightID: nid,
+    status: req.body.status,
+  });
+  newPassenger
+    .save()
+    .then((result) => {
+      console.log(result);
+      res.status(201).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+})
+
+
+//Registers new certain flight whose id is passed through parameters
 route.post("/add/:flightId", (req, res, next) => {
   const flightID = req.params.flightId;
   Passenger.find({ email: req.body.email })
@@ -63,6 +99,7 @@ route.post("/add/:flightId", (req, res, next) => {
                 new Date().getSeconds(),
               firstname: req.body.firstname,
               lastname: req.body.lastname,
+              userId: req.body.firstname.toLowerCase().slice(0, 3) + req.body.firstname.toLowerCase().slice(0, 3) + new Date().getSeconds(),
               number: req.body.number,
               email: req.body.email,
               password: hash,
@@ -129,8 +166,29 @@ route.patch("/:Id", (req, res, next) => {
 });
 
 //deletes a certain id of passenger
-route.delete("/:bookid", (req, res, next) => {
-  const id = req.params.bookid;
+route.delete("/:userid", (req, res, next) => {
+  const id = req.params.userid;
+  Passenger.remove({ userId: id })
+    .exec()
+    .then((doc) => {
+      console.log(doc);
+      res.status(200).json({
+        message: "Succesfully deleted ",
+        count: doc.deletedCount,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
+
+//removes particular flight booking and not the user
+route.delete("/book/:bookId", (req, res, next) => {
+  const id = req.params.bookId;
   Passenger.remove({ bookId: id })
     .exec()
     .then((doc) => {
@@ -181,7 +239,7 @@ route.post("/login", (req, res, next) => {
           return res.status(200).json({
             message: "Auth Succesful",
             token: token,
-            id: user[0].bookId
+            id: user[0].userId
           });
         }
         res.status(401).json({
@@ -198,9 +256,11 @@ route.post("/login", (req, res, next) => {
 });
 
 
+
+//gets all the flight registered on certain user ID
 route.get("/get/status/:id", (req, res, next) => {
   const bID = req.params.id;
-  Passenger.find({ bookId: bID })
+  Passenger.find({ userId: bID })
     .exec()
     .then((result) => {
       res.status(200).json(result);
