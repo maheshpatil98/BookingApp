@@ -2,10 +2,8 @@ const express = require("express");
 const route = express.Router();
 const mongoose = require("mongoose");
 const Passenger = require("../models/Passenger-schema");
-const { strict } = require("assert");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { json } = require("body-parser");
 
 //returns all the passengers in the database
 route.get("/", (req, res, next) => {
@@ -19,7 +17,7 @@ route.get("/", (req, res, next) => {
           return {
             _id: doc._id,
             flightID: doc.flightID,
-            userId: doc.userId,
+            useridentification: doc.useridentification,
             firstname: doc.firstname,
             lastname: doc.lastname,
             number: doc.number,
@@ -40,20 +38,23 @@ route.get("/", (req, res, next) => {
 });
 
 //books a flight
-route.post("/book/:id/:uid", (req, res, next) => {
+route.post("/book/:id/:amt/:uid", (req, res, next) => {
   const nid = req.params.id;
+  const amount = req.params.amt;
   const uId = req.params.uid;
+
   const newPassenger = new Passenger({
     _id: mongoose.Types.ObjectId(),
     bookId:
       req.body.firstname.toUpperCase().slice(0, 3) +
       nid +
       new Date().getSeconds(),
-    userId: uId,
+    useridentification: uId,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     number: req.body.number,
     email: req.body.email,
+    amount: amount,
     password: req.body.password,
     Nationality: req.body.Nationality,
     flightID: nid,
@@ -75,8 +76,9 @@ route.post("/book/:id/:uid", (req, res, next) => {
 
 
 //Registers new certain flight whose id is passed through parameters
-route.post("/add/:flightId", (req, res, next) => {
+route.post("/add/:flightId/:amt", (req, res, next) => {
   const flightID = req.params.flightId;
+  const amount = req.params.amt;
   Passenger.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -99,10 +101,11 @@ route.post("/add/:flightId", (req, res, next) => {
                 new Date().getSeconds(),
               firstname: req.body.firstname,
               lastname: req.body.lastname,
-              userId: req.body.firstname.toLowerCase().slice(0, 3) + req.body.firstname.toLowerCase().slice(0, 3) + new Date().getSeconds(),
+              useridentification: req.body.firstname.toLowerCase().slice(0, 3) + req.body.lastname.toLowerCase().slice(0, 3) + new Date().getSeconds(),
               number: req.body.number,
               email: req.body.email,
               password: hash,
+              amount: amount,
               Nationality: req.body.Nationality,
               flightID: flightID,
               status: req.body.status,
@@ -128,7 +131,7 @@ route.post("/add/:flightId", (req, res, next) => {
 //Searches for a certain passenger id in the whole database
 route.get("/:orderId", (req, res, next) => {
   const id = req.params.orderId;
-  Passenger.findById(id)
+  Passenger.findById({ useridentification: id })
     .exec()
     .then((result) => {
       console.log(result);
@@ -136,7 +139,7 @@ route.get("/:orderId", (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json(result);
+      res.status(500).json(err);
     });
 });
 
@@ -168,7 +171,7 @@ route.patch("/:Id", (req, res, next) => {
 //deletes a certain id of passenger
 route.delete("/:userid", (req, res, next) => {
   const id = req.params.userid;
-  Passenger.remove({ userId: id })
+  Passenger.remove({ useridentification: id })
     .exec()
     .then((doc) => {
       console.log(doc);
@@ -239,7 +242,7 @@ route.post("/login", (req, res, next) => {
           return res.status(200).json({
             message: "Auth Succesful",
             token: token,
-            id: user[0].userId
+            id: user[0].useridentification
           });
         }
         res.status(401).json({
@@ -260,7 +263,7 @@ route.post("/login", (req, res, next) => {
 //gets all the flight registered on certain user ID
 route.get("/get/status/:id", (req, res, next) => {
   const bID = req.params.id;
-  Passenger.find({ userId: bID })
+  Passenger.find({ useridentification: bID })
     .exec()
     .then((result) => {
       res.status(200).json(result);

@@ -17,16 +17,19 @@ class CheckStatus extends Component {
             source: "",
             destination: "",
             showlists: false,
-            data: []
+            data: [],
+            bookId: ""
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.showSearch = this.showSearch.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
+        this.displayRazorpay = this.displayRazorpay.bind(this);
+
     }
 
     // This function Updates the property of entity, Basically a submit function after filling update form 
-    onSubmit(flight) {
+    onSubmit() {
         const Post = [{
             propName: this.state.propName,
             value: this.state.newValue
@@ -164,7 +167,6 @@ class CheckStatus extends Component {
         const Post = {
             firstname: this.state.bookData[0].firstname,
             lastname: this.state.bookData[0].lastname,
-            userId: this.state.bookData[0].userId,
             number: this.state.bookData[0].number,
             Nationality: this.state.bookData[0].Nationality,
             status: this.state.bookData[0].status,
@@ -174,7 +176,7 @@ class CheckStatus extends Component {
         console.log(Post);
 
 
-        fetch("http://localhost:7002/bookings/book/" + e.flightId + "/" + Post.userId, {
+        fetch("http://localhost:7002/bookings/book/" + e.flightId + "/" + e.amount + "/" + this.state.bookData[0].useridentification, {
             method: "POST",
             headers: {
                 "content-type": "application/json",
@@ -266,10 +268,63 @@ class CheckStatus extends Component {
         )
     }
 
+    loadScript(src) {
+        return new Promise((resolve) => {
+            const script = document.createElement('script')
+            script.src = src
+            script.onload = () => {
+                resolve(true)
+            }
+            script.onerror = () => {
+                resolve(false)
+            }
+            document.body.appendChild(script)
+        })
+    }
 
 
+    async displayRazorpay(fly) {
+
+        const __DEV__ = document.domain === 'localhost'
+
+        const res = await this.loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+        if (!res) {
+            alert('Razorpay SDK failed to load. Are you online?')
+            return
+        }
+
+        const data = await fetch('http://localhost:7003/pay/razorpay/' + fly.amount, { method: 'POST' })
+            .then((t) => t.json())
+
+        console.log(data)
+
+        const options = {
+            key: __DEV__ ? 'rzp_test_uGoq5ABJztRAhk' : 'PRODUCTION_KEY',
+            currency: 'INR',
+            amount: fly.amount.toString(),
+            order_id: data.id,
+            name: 'Donation',
+            description: 'Thank you for nothing. Please give us some money',
+            // image: 'http://localhost:1337/logo.svg',
+            handler: function (response) {
+                alert(response.razorpay_payment_id)
+                alert(response.razorpay_order_id)
+                alert(response.razorpay_signature)
+            },
+            prefill: {
+                name: fly.firstname,
+                email: 'patil@mail.com',
+                phone_number: '9899999999'
+            }
+        }
+        const paymentObject = new window.Razorpay(options)
+        paymentObject.open();
+
+    }
 
     render() {
+
 
         let path = "/flights";
         const BookList = this.state.bookData.map((fly) => (
@@ -281,6 +336,7 @@ class CheckStatus extends Component {
                     <p className="card-text">Full Name: {fly.firstname}  {fly.lastname}</p>
                     <p className="card-text">Number: {fly.number}  Nationality: {fly.Nationality} </p>
                     <p className="card-text">Email: {fly.email}</p>
+                    <p className="card-text">amount: {fly.amount}</p>
                     <p className="card-text">Flight Status: {fly.status}</p>
 
                     <div className="d-flex justify-content-between">
@@ -292,7 +348,7 @@ class CheckStatus extends Component {
                             })
                                 .catch((err) => { console.log(err); alert(`error occured ${err}`) })
                         }}> Delete</button>
-                        <button className="btn btn-primary" > Pay</button>
+                        <button className="btn btn-primary" onClick={() => { this.displayRazorpay(fly) }} > Pay</button>
                     </div>
                 </div>
             </div >
@@ -306,6 +362,7 @@ class CheckStatus extends Component {
                 <td>{flight.flightDestination}</td>
                 <td>{flight.flightArrival}</td>
                 <td>{flight.flightDeparture}</td>
+                <td>{flight.amount}</td>
                 <td></td>
             </tr>
         ));

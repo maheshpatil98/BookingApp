@@ -13,12 +13,22 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "cross-env": "^7.0.2",
+    "env-cmd": "^10.1.0",
+    "jest": "^26.4.2",
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon booking-server.js"
+    "test": "env-cmd -f ./config/test.env/ jest --watch",
+    "start": "env-cmd ./config/dev.env nodemon booking-server"
   },
   "author": "mahesh",
-  "license": "ISC"
+  "license": "ISC",
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  }
 }

@@ -35,6 +35,7 @@ class Booking extends Component {
   onSubmit(e) {
     e.preventDefault();
     const id = this.props.match.params.id;
+    const amt = this.props.match.params.amt;
     const Post = {
       firstname: this.state.firstname,
       lastname: this.state.lastname,
@@ -44,7 +45,7 @@ class Booking extends Component {
       email: this.state.email,
       password: this.state.password
     };
-    fetch("http://localhost:7002/bookings/add/" + id, {
+    fetch("http://localhost:7002/bookings/add/" + id + "/" + amt, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -54,12 +55,12 @@ class Booking extends Component {
       .then((res) => res.json())
       .then((rems) => {
         console.log(rems);
-        this.setState((this.state.cheems = rems));
+        this.setState({ cheems: rems });
         alert(
           `Booked succesfully with booking ID ${this.state.cheems.bookId} and flight number ${this.state.cheems.flightID} please verify following details
-          Status: ${this.state.cheems.status}, userId:${this.state.cheems.userId},first name : ${this.state.cheems.firstname}, last name: ${this.state.cheems.lastname} and phone no: ${this.state.cheems.number}`
+          Status: ${this.state.cheems.status}, userId:${this.state.cheems.useridentification},first name : ${this.state.cheems.firstname}, last name: ${this.state.cheems.lastname} and phone no: ${this.state.cheems.number}`
         );
-        let path = "/checkstatus/" + rems.userId;
+        let path = "/checkstatus/" + rems.useridentification;
         this.props.history.push(path);
       });
   }

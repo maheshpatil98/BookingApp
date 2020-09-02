@@ -23,11 +23,12 @@ route.post("/addflight", auth, (req, res, next) => {
     flightDestination: req.body.flightDestination,
     flightArrival: req.body.flightArrival,
     flightDeparture: req.body.flightDeparture,
+    amount: req.body.amount,
     flightStatus: req.body.flightStatus
   };
   Axios.post("http://localhost:7001/flights/", flight)
     .then((result) => {
-      console.log(result);
+      console.log(result.data);
       res.send(result.data);
     })
     .catch((err) => {
@@ -128,7 +129,6 @@ route.delete("/:id", auth, (req, res, next) => {
     .catch(err => console.log(err))
 
 });
-
 
 
 

@@ -43,7 +43,7 @@ class Flight extends Component {
   routeChange = (e) => {
     const a = prompt("This page will directly take u to the sign up page, If you are already a user log in to see status of your flights");
     if (a == 'CONFIRM') {
-      let path = "/book/" + e.flightId;
+      let path = "/book/" + e.flightId + "/" + e.amount;
       this.props.history.push(path);
     } else {
       window.location.reload();
@@ -107,6 +107,7 @@ class Flight extends Component {
         <td>{flight.flightDestination}</td>
         <td>{flight.flightArrival}</td>
         <td>{flight.flightDeparture}</td>
+        <td>{flight.amount}</td>
         <td>
           <button
             className="btn btn-primary"
@@ -216,6 +217,7 @@ class Flight extends Component {
                 <td>Flight Destination</td>
                 <td>Flight Arrival</td>
                 <td>Flight Departure</td>
+                <td>Price</td>
                 <td>Book 'em</td>
                 <td></td>
               </tr>

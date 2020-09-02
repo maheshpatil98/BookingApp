@@ -20,17 +20,27 @@
     "prepend-http": "^2.0.0",
     "pupa": "^2.0.1",
     "readdirp": "^3.4.0",
-    "semver-diff": "^3.1.1",
-    "responselike": "^1.0.2"
+    "responselike": "^1.0.2",
+    "semver-diff": "^3.1.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
+    "env-cmd": "^8.0.2",
+    "jest": "^26.4.2",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon flight-server"
+    "test": "env-cmd ./config/test.env/ jest --watch",
+    "start": "env-cmd ./config/dev.env/ nodemon flight-server"
   },
   "author": "mahesh",
-  "license": "ISC"
+  "license": "ISC",
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  }
 }

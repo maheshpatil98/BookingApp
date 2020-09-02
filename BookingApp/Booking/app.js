@@ -7,7 +7,7 @@ const bookRoute = require("./api/routes/Booking-route");
 const statusRoute = require("./api/routes/User-status");
 
 mongoose.connect(
-  "mongodb+srv://mahesh:mahesh@testing.qwtsu.mongodb.net/flight?retryWrites=true&w=majority",
+  process.env.MONGODB_URL,
   () => {
     console.log("Connected to database succesfully..");
   }

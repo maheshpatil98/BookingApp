@@ -8,16 +8,12 @@ const flightRoute = require("./api/routes/Flight-route");
 const Murgan = require("morgan");
 
 mongoose.connect(
-  "mongodb+srv://mahesh:mahesh@testing.qwtsu.mongodb.net/flight?retryWrites=true&w=majority",
-  () => {
-    console.log("Connected to database succesfully..");
-  }
+  process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(

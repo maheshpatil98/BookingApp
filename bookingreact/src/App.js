@@ -74,7 +74,7 @@ class App extends Component {
           <Route path="/flights" children={<Flight />} />
           <Route path="/home" children={<Home />} />
 
-          <Route path="/book/:id" children={<Booking />} />
+          <Route path="/book/:id/:amt" children={<Booking />} />
 
           <Route path="/search/:token/:name" children={<SearchId />} />
 

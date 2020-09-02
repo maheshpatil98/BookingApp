@@ -11,6 +11,7 @@ class AddFlight extends Component {
             flightDeparture: "",
             flightArrival: "",
             flightStatus: "",
+            amount: 0,
             cheems: {},
         };
         this.onChange = this.onChange.bind(this);
@@ -35,7 +36,7 @@ class AddFlight extends Component {
             flightSource: this.state.flightSource,
             flightDestination: this.state.flightDestination,
             flightArrival: this.state.flightArrival,
-            // dob: this.state.dob,
+            amount: this.state.amount,
             flightDeparture: this.state.flightDeparture,
             flightStatus: this.state.flightStatus
         };
@@ -51,13 +52,18 @@ class AddFlight extends Component {
             .then((rems) => {
                 console.log(rems);
                 this.setState({ cheems: rems });
-                console.log(this.state.cheems.flight);
+                console.log(this.state.cheems);
                 alert(
-                    `Booked succesfully with flight ID ${this.state.cheems.flight.flightId} and flight Source ${this.state.cheems.flight.flightSource} please verify following details
-              Status: ${this.state.cheems.flight.flightDestination}, first name : ${this.state.cheems.flight.flightArrival}, last name: ${this.state.cheems.flight.flightDeparture} and phone no: ${this.state.cheems.flight.flightStatus}`
+                    `Booked succesfully with flight ID ${rems.flight.flightId} and flight Source ${rems.flight.flightSource} please verify following details
+              Status: ${rems.flight.flightDestination}, first name : ${rems.flight.flightArrival}, last name: ${rems.flight.flightDeparture} and phone no: ${rems.flight.flightStatus}
+              and Amount ${rems.flight.flightId}`
                 );
-            });
-        let path = "/search/" + this.props.match.params.id;
+            })
+            .catch(err => {
+                alert(`error occured : ${err}`);
+                window.location.reload();
+            })
+        let path = "/search/" + this.props.match.params.id + "/" + this.props.match.params.name;
         this.props.history.push(path);
     }
 
@@ -101,16 +107,19 @@ class AddFlight extends Component {
                         />
                     </div>
 
-                    {/* <div className="form-group">
-                <label>Date of Birth</label>
-                <br />
-                <DatePicker
-                  locale="es"
-                  dateFormat="yyyy-mm-dd"
-                  selected={this.state.dob}
-                  onChange={this.handleChange}
-                />
-              </div> */}
+                    <div className="form-group">
+                        <label>Price per passenger</label>
+                        <br />
+                        <input
+                            type="number"
+                            name="amount"
+                            className="form-control"
+                            placeholder="Price for journey"
+                            required
+                            value={this.state.amount}
+                            onChange={this.onChange}
+                        />
+                    </div>
 
                     <div className="form-group">
                         <label>Flight Arrival</label> <br />
