@@ -2,17 +2,17 @@ const mongoose = require("mongoose");
 
 const payDetailsSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    id: { type: String, required: true },
-    entity: { type: String, required: true },
-    amount: { type: Number, required: true },
-    amount_paid: { type: Number, required: true },
-    amount_due: { type: Number, required: true },
-    currency: { type: String, required: true },
-    receipt: { type: String, required: true },
-    offer_id: { type: String, required: true },
-    status: { type: String, required: true },
-    attempts: { type: Number, required: true },
-    created_at: { type: Number, required: true }
+    id: { type: String },
+    entity: { type: String },
+    amount: { type: Number },
+    amount_paid: { type: Number },
+    amount_due: { type: Number },
+    currency: { type: String },
+    receipt: { type: String },
+    offer_id: { type: String },
+    status: { type: String },
+    attempts: { type: Number },
+    created_at: { type: Number }
 });
 
 module.exports = mongoose.model("Pay", payDetailsSchema);

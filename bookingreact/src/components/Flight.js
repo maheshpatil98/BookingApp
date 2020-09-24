@@ -110,7 +110,7 @@ class Flight extends Component {
         <td>{flight.amount}</td>
         <td>
           <button
-            className="btn btn-primary"
+            className="btn btn-outline-secondary"
             onClick={() => this.routeChange(flight)}
           >
             Book
@@ -190,7 +190,7 @@ class Flight extends Component {
                 <div>
                   <label>Password :</label>
                   <input
-                    type="text"
+                    type="password"
                     name="password"
                     placeholder="Password"
                     value={this.state.password}
@@ -212,13 +212,13 @@ class Flight extends Component {
           <table className="table table-hover">
             <thead>
               <tr>
-                <td>Flight Number</td>
-                <td>Flight Source</td>
-                <td>Flight Destination</td>
-                <td>Flight Arrival</td>
-                <td>Flight Departure</td>
+                <td> Number</td>
+                <td> Source</td>
+                <td> Destination</td>
+                <td> Arrival</td>
+                <td> Departure</td>
                 <td>Price</td>
-                <td>Book 'em</td>
+                <td>Book</td>
                 <td></td>
               </tr>
             </thead>
@@ -230,9 +230,8 @@ class Flight extends Component {
             <h6>For Administrator and Other Bussiness Related Users: </h6>
 
             <NavLink to="/signup" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Signup</NavLink>
-
-
             <NavLink to="/login" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Login</NavLink>
+
             <p>All Terms and Conditions Apply*</p>
           </div>
 

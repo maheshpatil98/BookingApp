@@ -12,7 +12,7 @@ const passengerSchema = mongoose.Schema({
   amount: { type: Number, required: true },
   Nationality: { type: String, required: true },
   flightID: { type: String, ref: "Flight", required: true },
-  status: { type: String, default: "Booked" },
+  status: { type: String, default: "BOOKED" },
 });
 
 module.exports = mongoose.model("Passenger", passengerSchema);

@@ -11,7 +11,7 @@ class BookingsInFlight extends Component {
             bookData: [{}],
             tokenn: this.props.match.params.id,
             isForm: false,
-            propName: "",
+            propName: "Select Value",
             newValue: "",
             bookId: ""
         };
@@ -98,20 +98,20 @@ class BookingsInFlight extends Component {
     getaform() {
         return (
             <div className="container-sm " style={{ width: "28rem" }}>
-
+                <br /><hr />
                 <form style={{ textAlign: "center" }} onSubmit={this.onSubmit} >
                     <h5 className="card-title">Edit The Certain Fields</h5>
                     <Dropdown>
                         <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            Select the Value You Wish to Update
+                            {this.state.propName}
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "firstname" }) }}>First Name</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "lastname" }) }}>Last Name</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "email" }) }}>E mail</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "number" }) }}>Number</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "status" }) }}>Status</Dropdown.Item>
+                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "firstname" }); }}>First Name</Dropdown.Item>
+                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "lastname" }) }}>Last Name</Dropdown.Item>
+                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "email" }) }}>E mail</Dropdown.Item>
+                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "number" }) }}>Number</Dropdown.Item>
+                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "status" }) }}>Status</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                     <br />
@@ -157,17 +157,20 @@ class BookingsInFlight extends Component {
                     </div>
 
                 </div>
-
+                <br />
             </div>
         ));
 
         return (
-            <div className="container-sm w-90 justify-content-between">
-                <div style={{ display: "flex", flexDirection: "row", backgroundColor: "#121212", margin: "10px 10px" }}>
-                    <button className="btn btn-primary" onClick={() => { this.props.history.push(path); }}>Back</button>
+            <div>
+                <hr />
+                <div>
+                    <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={() => { this.props.history.push(path); }}>Back</button>
                 </div>
-                <div className="d-flex justify-content-between">
+                <hr />
+                <div className="container-sm w-90 d-flex justify-content-between">
                     <div>
+                        <h5 style={{ textAlign: "center" }}>All Users</h5><br />
                         <tbody>{BookList}</tbody>
                     </div>
                     <div>

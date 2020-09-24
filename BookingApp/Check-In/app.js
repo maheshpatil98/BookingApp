@@ -9,9 +9,11 @@ const flightRoute = require("./routers/Admin");
 const morgan = require('morgan');
 
 
-mongoose.connect(process.env.MONGODB_URL, () => {
-    console.log("Connected to database succesfully..");
-});
+mongoose.connect(
+    process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => {
+        console.log("Connected to databse succesfully");
+    }
+);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

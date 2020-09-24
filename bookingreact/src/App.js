@@ -36,15 +36,17 @@ class App extends Component {
     return (
       <div >
         <Router>
-          <Navbar bg="dark" variant="dark">
-            <img src={require("./img/book.png")} className="rounded" style={{ height: "9vh", width: "9vh", margin: "5px 5px" }} />
-            <img src={require("./img/goair3.png")} className="rounded" style={{ height: "9vh", width: "25vh", margin: "5px 5px" }} />
+          <Navbar bg="dark" variant="dark" className="mr-auto d-flex justify-content-between">
+            <div>
+              <img src={require("./img/book.png")} className="rounded" style={{ height: "9vh", width: "9vh", margin: "5px 5px" }} />
+              <img src={require("./img/goair3.png")} className="rounded" style={{ height: "9vh", width: "25vh", margin: "5px 5px" }} />
+            </div>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <br />
             <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto d-flex justify-content-between">
+              <Nav className="d-flex justify-content-between">
                 <NavLink to="/flights" style={{ textAlign: "center", margin: "5px 5px", fontSize: "15px" }} className="btn btn-outline-light" >Home</NavLink>
-
+                <div><hr></hr></div>
                 <NavLink to="/about" style={{ textAlign: "center", margin: "5px 5px" }} className="btn btn-outline-light">About Us</NavLink>
               </Nav>
 

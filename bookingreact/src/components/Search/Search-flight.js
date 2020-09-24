@@ -50,7 +50,7 @@ class SearchId extends Component {
   }
 
   componentWillMount() {
-    fetch("http://localhost:7001/flights/sort/flightSource/1")
+    fetch("http://localhost:7001/flights/")
       .then((response) =>
         response.json().catch((err) => {
           console.err(`'${err}' happened!`);
@@ -143,7 +143,7 @@ class SearchId extends Component {
           <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightArrival" }) }}>Arrival</Dropdown.Item>
           <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightDeparture" }) }}>Departure</Dropdown.Item>
           <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightStatus" }) }}>Status</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightStatus" }) }}>Price</Dropdown.Item>
+          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "amount" }) }}>amount</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
@@ -285,79 +285,86 @@ class SearchId extends Component {
 
 
     return (
-      <div className="container-sm w-90">
-
-        <div style={{ display: "flex", flexDirection: "row", backgroundColor: "#121212" }}>
-          <button className="btn btn-secondary" style={{ margin: "10px 10px" }} onClick={this.goingToAdd} >Add Flight</button> <hr />
-          <h4 style={{ color: "white", margin: "10px 10px" }}>Welcome {this.props.match.params.name}</h4>
-          <button className="btn btn-secondary" style={{ margin: "10px 10px" }} onClick={this.goingToBookers}>Bookers</button>
-          <button className="btn btn-secondary" style={{ margin: "10px 10px" }} onClick={this.goingToLogout}>Logout</button>
-
-        </div>
-        <br />
-        <form onSubmit={this.onSubmit} className="d-flex justify-content-between w-90">
-          <div className="form-group" style={{ width: "170vh" }}>
-            <input
-              type="text"
-              name="flightId"
-              placeholder="Search by Flight ID"
-              className="form-control"
-              value={this.state.flightId}
-              onChange={this.onChange}
-            />
-          </div>
-          <button className="btn btn-success" style={{ height: "6vh", width: "10vh" }} type="submit">
-            Go
-          </button>
-        </form>
-
+      <div>
         <hr />
-        <div>
+        <div className="d-flex justify-content-between">
+          <div><button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={this.goingToAdd} >Add Flight</button>
+            <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={this.goingToBookers}>Bookers</button></div>
+          <h4 style={{ margin: "10px 10px", textAlign: "center" }}>Welcome {this.props.match.params.name}</h4>
+          <button className="btn btn-outline-warning" style={{ margin: "10px 10px" }} onClick={this.goingToLogout}><b>Logout</b></button>
+        </div>
+        <hr />
+
+
+        <div className="container-sm w-90">
+
+          <form onSubmit={this.onSubmit} className="d-flex justify-content-between w-90">
+            <div className="form-group" style={{ width: "170vh" }}>
+              <input
+                type="text"
+                name="flightId"
+                placeholder="Search by Flight ID"
+                className="form-control"
+                value={this.state.flightId}
+                onChange={this.onChange}
+              />
+            </div>
+            <button className="btn btn-success" style={{ height: "6vh", width: "10vh" }} type="submit">
+              Go
+          </button>
+          </form>
+
+          <hr />
           <div>
-            {this.state.updateForm ? this.routeChangeUpdate() : this.defaultview()}
-          </div>
-          <div>
-            {this.state.sortForm ? this.routeSort() : this.defaultview()}
-          </div>
-          <div className="container-m">
-            <table className="table table-hover">
-              <thead>
-                <tr>
-                  <td> <button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    this.setState({ data: this.state.data.sort((a, b) => (a.flightId > b.flightId ? 1 : -1)) })
-                  }}>Flight Id</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightSource > b.flightSource ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Source</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightDestination > b.flightDestination ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Destination</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightArrival > b.flightArrival ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Arrival</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightDeparture > b.flightDeparture ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Departure</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightStatus > b.flightStatus ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Status</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.amount > b.amount ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Price</button></td>
-                  <td></td>
-                </tr>
-              </thead>
-              <tbody>{flightList}</tbody>
-            </table>
+            <div>
+              {this.state.updateForm ? this.routeChangeUpdate() : this.defaultview()}
+            </div>
+            <div>
+              {this.state.sortForm ? this.routeSort() : this.defaultview()}
+            </div>
+            <div className="container-m">
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <td> <button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
+                      this.setState({ data: this.state.data.sort((a, b) => (a.flightId > b.flightId ? 1 : -1)) })
+                    }}>Flight Id</button></td>
+                    <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
+                      const a = this.state.data.sort((a, b) => (a.flightSource > b.flightSource ? 1 : -1));
+                      this.setState({ data: a });
+                    }}>Source</button></td>
+                    <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
+                      const a = this.state.data.sort((a, b) => (a.flightDestination > b.flightDestination ? 1 : -1));
+                      this.setState({ data: a });
+                    }}>Destination</button></td>
+                    <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
+                      const a = this.state.data.sort((a, b) => (a.flightArrival > b.flightArrival ? 1 : -1));
+                      this.setState({ data: a });
+                    }}>Arrival</button></td>
+                    <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
+                      const a = this.state.data.sort((a, b) => (a.flightDeparture > b.flightDeparture ? 1 : -1));
+                      this.setState({ data: a });
+                    }}>Departure</button></td>
+                    <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
+                      const a = this.state.data.sort((a, b) => (a.flightStatus > b.flightStatus ? 1 : -1));
+                      this.setState({ data: a });
+                    }}>Status</button></td>
+                    <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
+                      const a = this.state.data.sort((a, b) => (a.amount > b.amount ? 1 : -1));
+                      this.setState({ data: a });
+                    }}>Price</button></td>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tbody>{flightList}</tbody>
+              </table>
+            </div>
+
           </div>
 
+
         </div>
+
 
 
       </div>

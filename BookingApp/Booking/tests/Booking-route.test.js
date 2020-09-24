@@ -19,12 +19,18 @@ const passenger = {
     bookId: "MOHKASDEL159905683100845"
 }
 
+const flushPromises = new Promise(resolve => setImmediate(resolve));
+
 jest.setTimeout(30000);
 
 beforeEach(async () => {
+    await flushPromises;
     await booking.deleteMany({});
     await booking(passenger).save();
 })
+
+
+
 
 test('should sucesfully post a Passenger details in the database function', async () => {
     await request(app).post('/bookings/add/KASDEL1599056831008/23000')
@@ -43,12 +49,34 @@ test('should sucesfully post a Passenger details in the database function', asyn
         })
 })
 
-test('should get passengers sucesfully', async () => {
+test('should sucesfully post a Passenger details in the database function', async () => {
+    await request(app).post('/bookings/add/KASDEL1599056831008/23000')
+        .send({
+            firstname: "anuj",
+            lastname: "pela",
+            number: "8956451265",
+            password: "password",
+            Nationality: "Indian",
+            status: "CONFIRMED"
+        })
+        .expect(500);
+})
+
+
+
+
+test('giving correct input for testing', async () => {
     await request(app).get("/bookings/")
         .expect((resp) => {
             resp.length = 2
         })
 })
+
+
+
+
+
+
 
 test('should return a passeger with given id', async () => {
     await request(app).get("/bookings/mohpal39")
@@ -57,6 +85,12 @@ test('should return a passeger with given id', async () => {
             resp.flightID = passenger.flightID;
         })
 })
+
+test('should return a passeger with given id', async () => {
+    await request(app).get("/bookings/mo39")
+        .expect(500)
+})
+
 
 test('should update a passeger with given id', async () => {
     await request(app).patch("/bookings/MOHKASDEL159905683100845")

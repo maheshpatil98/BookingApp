@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
+import jsPDF from "jspdf";
 
 class CheckStatus extends Component {
     constructor(props) {
@@ -18,14 +19,15 @@ class CheckStatus extends Component {
             destination: "",
             showlists: false,
             data: [],
-            bookId: ""
+            bookId: "",
+            amount: 0
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.showSearch = this.showSearch.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.displayRazorpay = this.displayRazorpay.bind(this);
-
+        this.intheEnd = this.intheEnd.bind(this);
     }
 
     // This function Updates the property of entity, Basically a submit function after filling update form 
@@ -45,14 +47,21 @@ class CheckStatus extends Component {
         })
             .then((dat) => {
                 console.log(dat);
-                alert("Data Updated Successfully");
-                this.setState({ bookId: "", propName: "", newValue: "" });
-                window.location.reload();
+                if (this.state.propName === "amount" || this.state.propName === "status") {
+                    return
+                }
+                else {
+                    alert("Data Updated Successfully");
+                    this.setState({ bookId: "", propName: "", newValue: "" });
+                    window.location.reload();
+                }
             })
             .catch((err) => {
                 console.log(err);
             })
     }
+
+
 
     //get all booked tickets booked before
     componentWillMount() {
@@ -74,7 +83,7 @@ class CheckStatus extends Component {
             });
 
 
-        fetch("http://localhost:7001/flights/sort/flightSource/1")
+        fetch("http://localhost:7001/flights/")
             .then((response) =>
                 response.json().catch((err) => {
                     console.err(`'${err}' happened!`);
@@ -169,7 +178,7 @@ class CheckStatus extends Component {
             lastname: this.state.bookData[0].lastname,
             number: this.state.bookData[0].number,
             Nationality: this.state.bookData[0].Nationality,
-            status: this.state.bookData[0].status,
+            status: "BOOKED",
             email: this.state.bookData[0].email,
             password: this.state.bookData[0].password
         }
@@ -196,7 +205,7 @@ class CheckStatus extends Component {
     showflights() {
 
         const flightList = this.state.flightData.map((flight) => (
-            <div className="card" style={{ width: "28rem" }} >
+            <div className="card" style={{ width: "28rem" }} key={flight._id}>
                 <div className="card-body" style={{ textAlign: "center", alignContent: "center", alignItems: "center" }} key={flight._id}>
                     <h5 className="card-title">Ticket</h5>
                     <h6 className="card-subtitle mb-2 text-muted">Flight ID: {flight.flightId}</h6>
@@ -224,14 +233,43 @@ class CheckStatus extends Component {
 
     }
 
+    downloadPDF = (fly) => {
+        var flightArrival = "";
+        var flightDeparture = "";
+        fetch("http://localhost:7001/flights/" + fly.flightID)
+            .then(doc => doc.json())
+            .then((result) => {
+                console.log(result[0].flightArrival);
+                console.log(result[0].flightDeparture);
+                // flightArrival = ;
+                // flightDeparture = ;
+                console.log(flightArrival);
+                console.log(flightDeparture);
+
+                var doc = new jsPDF('p', 'pt');
+                doc.text([
+                    `Booking ID: ${fly.bookId}`,
+                    `Full Name: ${fly.firstname}  ${fly.lastname}`,
+                    `Number: ${fly.number}  Nationality: ${fly.Nationality}`,
+                    `Email: ${fly.email}`
+                ], 50, 50);
+
+                doc.text([`Flight Arrival Time:  ${result[0].flightArrival}`,
+                `Flight Departure Time: ${result[0].flightDeparture}`, "Be On Time ",
+                    "Happy Journey"], 50, 170);
+                doc.setFont('courier');
+                doc.text("Happy Journey from FLy Smart Family", 250, 250);
+                doc.save("Ticket.pdf");
+            })
+    }
+
     showSearch(e) {
 
         return (
             <div>
                 <form className="container-sm" style={{ textAlign: "center" }} onSubmit={this.onSearchSubmit} >
                     <div className="card-body " style={{ width: "28rem", alignContent: "center", alignItems: "center" }}>
-                        <h5 className="card-title">Start Your Journey Today !</h5>
-                        <h6 className="card-subtitle mb-2 text-muted">Search Flight Here</h6>
+                        <h5 className="card-title">Search Flight Here</h5>
                         <div>
                             <label>Source</label>
                             <input
@@ -268,6 +306,19 @@ class CheckStatus extends Component {
         )
     }
 
+    intheEnd() {
+
+        this.setState({ propName: "amount" })
+        this.setState({ newValue: 0 })
+        this.onSubmit();
+    }
+
+    afterinTheEnd() {
+        this.setState({ propName: "status" })
+        this.setState({ newValue: "CONFIRMED" })
+        this.onSubmit();
+    }
+
     loadScript(src) {
         return new Promise((resolve) => {
             const script = document.createElement('script')
@@ -300,7 +351,7 @@ class CheckStatus extends Component {
         console.log(data)
 
         const options = {
-            key: __DEV__ ? 'rzp_test_uGoq5ABJztRAhk' : 'PRODUCTION_KEY',
+            key: __DEV__ ? 'rzp_test_mTep58pZ2brlaL' : 'PRODUCTION_KEY',
             currency: 'INR',
             amount: fly.amount.toString(),
             order_id: data.id,
@@ -308,9 +359,17 @@ class CheckStatus extends Component {
             description: 'Thank you for nothing. Please give us some money',
             // image: 'http://localhost:1337/logo.svg',
             handler: function (response) {
-                alert(response.razorpay_payment_id)
-                alert(response.razorpay_order_id)
-                alert(response.razorpay_signature)
+                if (paymentObject.id == 'error') {
+                    alert('An Error has Occured ' + paymentObject.er)
+                }
+                else {
+
+                    alert(`Payment has done sucessfully ${response.razorpay_order_id}`);
+                    window.location.reload();
+                }
+                // alert(response.razorpay_payment_id)
+                // alert(response.razorpay_order_id)
+                // alert(response.razorpay_signature)
             },
             prefill: {
                 name: fly.firstname,
@@ -318,8 +377,12 @@ class CheckStatus extends Component {
                 phone_number: '9899999999'
             }
         }
-        const paymentObject = new window.Razorpay(options)
-        paymentObject.open();
+
+        const paymentObject = await new window.Razorpay(options)
+        await paymentObject.open();
+        this.setState({ bookId: fly.bookId });
+        await this.intheEnd();
+        await this.afterinTheEnd();
 
     }
 
@@ -329,29 +392,37 @@ class CheckStatus extends Component {
         let path = "/flights";
         const BookList = this.state.bookData.map((fly) => (
             <div className="card" style={{ width: "28rem" }}>
-                <div className="card-body" style={{ textAlign: "center", alignContent: "center", alignItems: "center" }}>
-                    <h5 className="card-title">Ticket</h5>
+                <br />
+                <div key={fly._id} className="card-body" style={{ textAlign: "center", alignContent: "center", alignItems: "center" }}>
                     <h6 className="card-subtitle mb-2 text-muted">Booking ID: {fly.bookId}</h6>
                     <p className="card-text">Flight Number: {fly.flightID}</p>
                     <p className="card-text">Full Name: {fly.firstname}  {fly.lastname}</p>
                     <p className="card-text">Number: {fly.number}  Nationality: {fly.Nationality} </p>
                     <p className="card-text">Email: {fly.email}</p>
-                    <p className="card-text">amount: {fly.amount}</p>
+                    <p className="card-text">Due Amount: {fly.amount}</p>
                     <p className="card-text">Flight Status: {fly.status}</p>
 
                     <div className="d-flex justify-content-between">
-                        <button className="btn btn-secondary" onClick={() => { this.setState({ isForm: !this.state.isForm }); this.setState({ bookId: fly.bookId }) }}> Edit</button>
-                        <button className="btn btn-danger" onClick={() => {
+                        <button className="btn btn-outline-secondary" onClick={() => { this.setState({ isForm: !this.state.isForm }); this.setState({ bookId: fly.bookId }) }}> Edit</button>
+                        <button className="btn btn-outline-danger" onClick={() => {
                             fetch("http://localhost:7002/bookings/book/" + fly.bookId, { method: "DELETE" }).then((e) => e.json()).then((rems) => {
                                 console.log(rems); alert(`message : ${rems.message}`)
                                 window.location.reload();
                             })
                                 .catch((err) => { console.log(err); alert(`error occured ${err}`) })
                         }}> Delete</button>
-                        <button className="btn btn-primary" onClick={() => { this.displayRazorpay(fly) }} > Pay</button>
+                        <div>{fly.amount !== 0 ? (<button className="btn btn-outline-primary" onClick={() => {
+                            this.displayRazorpay(fly);
+                        }} > Pay</button>) : <div />}</div>
+                        <div>{fly.amount === 0 ? (<button className="btn btn-outline-success" onClick={() => {
+                            this.downloadPDF(fly);
+                        }}>download</button>) : <div />}</div>
                     </div>
+
                 </div>
+
             </div >
+
         ));
 
 
@@ -370,14 +441,18 @@ class CheckStatus extends Component {
         return (
             <div className="container-sm w-90">
 
-                <div className=" d-flex justify-content-between" style={{ backgroundColor: "#121212" }}>
-                    <button className="btn btn-primary" style={{ margin: "10px 10px" }} onClick={() => { this.setState({ isShow: !this.state.isShow }) }} >Book New Flight</button>
-                    <h4 style={{ margin: "10px 10px", color: "white" }}>Welcome {this.state.bookData[0].firstname}</h4>
-                    <button className="btn btn-primary" style={{ margin: "10px 10px" }} onClick={() => { this.setState({ token: "" }); this.props.history.push(path); }} >Logout</button>
+                <hr />
+                <div className="d-flex justify-content-between" >
+                    <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={() => { this.setState({ isShow: !this.state.isShow }) }} >Book New Journey</button>
+                    <h4 style={{ margin: "10px 10px" }}>Welcome {this.state.bookData[0].firstname}</h4>
+                    <button className="btn btn-outline-danger" style={{ margin: "10px 10px" }} onClick={() => { this.setState({ token: "" }); this.props.history.push(path); }} >Logout</button>
                 </div>
                 <hr />
                 <div className="d-flex justify-between">
                     <div className="container-sm" >
+                        <br />
+                        <h4 style={{ textJustify: 'auto' }}>Your Bookings</h4>
+                        <br />
                         {BookList}
                     </div>
 
@@ -389,9 +464,11 @@ class CheckStatus extends Component {
                         <div style={{ textAlign: "center" }}>{this.state.isShow ? this.showSearch() : this.getsomething()}</div>
                     </div>
 
-
+                    <hr />
                 </div>
-                <h5>Available Flights</h5>
+                <hr />
+                <h5 style={{ textAlign: "center" }}>Available Flights</h5>
+                <hr />
                 <table className="table table-hover">
                     <thead>
                         <tr>

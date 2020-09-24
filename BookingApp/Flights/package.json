@@ -21,7 +21,9 @@
     "pupa": "^2.0.1",
     "readdirp": "^3.4.0",
     "responselike": "^1.0.2",
-    "semver-diff": "^3.1.1"
+    "semver-diff": "^3.1.1",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",

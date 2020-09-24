@@ -87,7 +87,7 @@ class Login extends Component {
               />
             </div>
             <br />
-            <button className="btn btn-success" type="submit">
+            <button className="btn btn-success" id="testForText" type="submit">
               Done
           </button>
           </div>

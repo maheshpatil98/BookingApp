@@ -6,6 +6,15 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 //returns all the passengers in the database
+/**
+ * @swagger
+ * /bookings:
+ *  get:
+ *    description: Use to request all flights
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
 route.get("/", (req, res, next) => {
   Passenger.find()
     .exec()
@@ -38,6 +47,54 @@ route.get("/", (req, res, next) => {
 });
 
 //books a flight
+/**
+ * @swagger
+ * /bookings/{id}/{amt}/{uId}:
+ *    post:
+ *      description: Use to post new booking in the database
+ *      parameters:
+ *              - name: id
+ *                description: get flight Id from url
+ *                in: path
+ *                type: string
+ *                required: true
+ *              - name: amt
+ *                description: get amount of flight
+ *                in: path
+ *                type: number
+ *                required: true
+ *              - name: uId
+ *                description: userIdentification to get
+ *                in: path
+ *                type: string
+ *                required: true
+ *              - name: reqBody
+ *                description: request body
+ *                in: body
+ *                schema:
+ *                    type: object
+ *                    properties:
+ *                       firstname:
+ *                          type: String
+ *                       lastname:
+ *                          type: String
+ *                       number:
+ *                          type: String
+ *                       email:
+ *                          type: String
+ *                       password:
+ *                          type: String
+ *                       Nationality:
+ *                          type: String
+ *                       status:
+ *                          type: String
+ *      responses:
+ *          '201':
+ *                   description: A successful response
+ *          '400':
+ *                   description: An error
+ *                 
+ */
 route.post("/book/:id/:amt/:uid", (req, res, next) => {
   const nid = req.params.id;
   const amount = req.params.amt;
@@ -129,6 +186,22 @@ route.post("/add/:flightId/:amt", (req, res, next) => {
 });
 
 //Searches for a certain passenger id in the whole database
+/**
+ * @swagger
+ * /bookings/{id}:
+ *  get:
+ *      description: find by id
+ *      parameters:
+ *           - name: id
+ *             description: get flight Id from URL
+ *             in: path
+ *             type: string
+ *             required: true
+ * 
+ *      responses:
+ *          '200':
+ *                   description: A successful response
+ */
 route.get("/:orderId", (req, res, next) => {
   const id = req.params.orderId;
   Passenger.findById({ useridentification: id })
@@ -146,6 +219,33 @@ route.get("/:orderId", (req, res, next) => {
 //updates a certain attribute of passenger
 //it takes paramter as propname and value, propname is property to be updated
 //value is the new value which will be updated
+
+/**
+ * @swagger
+ * /bookings/{id}:
+ *  patch:
+ *      description: updates the certain data of bookers with booking ID 
+ *      parameters:
+ *           - name: id
+ *             description: get a booking Id from url
+ *             in: path
+ *             type: string
+ *             required: true
+ *          
+ *           - name: reqBody
+ *             description: request body
+ *             in: body
+ *             schema:
+ *                 type: object
+ *                 properties:
+ *                     propName:
+ *                       type: string
+ *                     value:
+ *                       type: string    
+ *      responses:
+ *          '200':
+ *                   description: A successful response
+ */
 route.patch("/:Id", (req, res, next) => {
   const id = req.params.Id;
   //object which will be setted instead of old attribute
@@ -157,7 +257,7 @@ route.patch("/:Id", (req, res, next) => {
   Passenger.update({ bookId: id }, { $set: updateOps })
     .exec()
     .then((result) => {
-      console.log(result);
+      console.log(updateOps);
       res.status(200).json(result);
     })
     .catch((err) => {
@@ -169,6 +269,22 @@ route.patch("/:Id", (req, res, next) => {
 });
 
 //deletes a certain id of passenger
+/**
+ * @swagger
+ * /bookings/{id}:
+ *  delete:
+ *         description: delete by useridentification
+ *         parameters:
+ *           - name: id
+ *             description: insert useridentification
+ *             in: path
+ *             type: string
+ *             required: true
+ * 
+ *         responses:
+ *             '200':
+ *                    description: A successful response
+ */
 route.delete("/:userid", (req, res, next) => {
   const id = req.params.userid;
   Passenger.remove({ useridentification: id })
@@ -189,7 +305,7 @@ route.delete("/:userid", (req, res, next) => {
 });
 
 
-//removes particular flight booking and not the user
+//removes particular booking and not the user
 route.delete("/book/:bookId", (req, res, next) => {
   const id = req.params.bookId;
   Passenger.remove({ bookId: id })
@@ -212,7 +328,29 @@ route.delete("/book/:bookId", (req, res, next) => {
 
 //==================================
 
-
+/**
+ * @swagger
+ * /bookings/login/:
+ *    post:
+ *      description: logim
+ *      parameters:
+ *              - name: reqBody
+ *                description: request body
+ *                in: body
+ *                schema:
+ *                    type: object
+ *                    properties:
+ *                       email:
+ *                          type: String
+ *                       password:
+ *                          type: String
+ *      responses:
+ *          '201':
+ *                   description: A successful response
+ *          '400':
+ *                   description: An error
+ *                 
+ */
 route.post("/login", (req, res, next) => {
   Passenger.find({ email: req.body.email })
     .exec()

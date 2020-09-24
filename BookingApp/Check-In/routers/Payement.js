@@ -2,7 +2,7 @@ const express = require("express");
 const route = express.Router();
 const auth = require("../middleware/checkAuth");
 const PayDetails = require("../models/Payment");
-
+const mongoose = require('mongoose')
 const path = require('path')
 const shortid = require('shortid')
 const Razorpay = require('razorpay')
@@ -40,7 +40,7 @@ route.post('/verification', (req, res) => {
 
 
 
-route.post('/razorpay/:amount', (req, res, next) => {
+route.post('/razorpay/:amount', async (req, res, next) => {
     const payment_capture = 1
     const amount = req.params.amount;
     const currency = 'INR'
@@ -53,8 +53,21 @@ route.post('/razorpay/:amount', (req, res, next) => {
     }
 
     try {
-        const response = razorpay.orders.create(options)
+        const response = await razorpay.orders.create(options)
         console.log(response)
+        const newPay = new PayDetails({
+            _id: mongoose.Types.ObjectId(),
+            id: response.id,
+            entity: response.entity,
+            amount: response.amount,
+            amount_paid: response.amount_paid,
+            amount_due: response.amount_due,
+            currency: response.currency,
+            receipt: response.receipt,
+            status: response.status,
+            created_at: response.created_at
+        });
+        newPay.save();
         res.json({
             id: response.id,
             currency: response.currency,
@@ -63,6 +76,10 @@ route.post('/razorpay/:amount', (req, res, next) => {
     }
     catch (error) {
         console.log(error);
+        res.json({
+            id: 'error',
+            er: error
+        })
     }
 
 })

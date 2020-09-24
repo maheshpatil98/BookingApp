@@ -72,103 +72,106 @@ class AddFlight extends Component {
     render() {
         let path = "/search/" + this.state.tokenn + "/" + this.props.match.params.name;
         return (
-            <div className="container-sm w-90">
-                <div style={{ display: "flex", flexDirection: "row", backgroundColor: "#121212", margin: "10px 10px" }}>
-                    <button className="btn btn-primary" onClick={() => { this.props.history.push(path); }}>Back</button>
+            <div>
+                <hr />
+                <div>
+                    <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={() => { this.props.history.push(path); }}>Back</button>
                 </div>
                 <hr />
-                <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
-                        <label>First Source</label>
+                <div className="container-sm w-50">
+                    <form onSubmit={this.onSubmit}>
+                        <div className="form-group">
+                            <label>First Source</label>
+                            <br />
+                            <input
+                                type="text"
+                                name="flightSource"
+                                required
+                                className="form-control"
+                                placeholder="Add a Flight Source"
+                                pattern="[A-Za-z]{3,}"
+                                value={this.state.flightSource}
+                                onChange={this.onChange}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Flight Destination</label> <br />
+                            <input
+                                type="text"
+                                name="flightDestination"
+                                className="form-control"
+                                placeholder="Add Destiantion"
+                                pattern="[A-Za-z]{3,}"
+                                required
+                                value={this.state.flightDestination}
+                                onChange={this.onChange}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Price per passenger</label>
+                            <br />
+                            <input
+                                type="number"
+                                name="amount"
+                                className="form-control"
+                                placeholder="Price for journey"
+                                required
+                                value={this.state.amount}
+                                onChange={this.onChange}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Flight Arrival</label> <br />
+                            <input
+                                type="text"
+                                name="flightArrival"
+                                className="form-control"
+                                placeholder="Add Arrival Time"
+                                required
+                                value={this.state.flightArrival}
+                                onChange={this.onChange}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Flight Departure</label>
+                            <br />
+                            <input
+                                type="String"
+                                name="flightDeparture"
+                                className="form-control"
+                                placeholder="Add Departure Time"
+                                required
+                                value={this.state.flightDeparture}
+                                onChange={this.onChange}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Flight Status</label>
+                            <br />
+                            <input
+                                type="text"
+                                name="flightStatus"
+                                className="form-control"
+                                placeholder="Enter pre-defined status for flight"
+                                required
+                                value={this.state.flightStatus}
+                                onChange={this.onChange}
+                            />
+                        </div>
                         <br />
-                        <input
-                            type="text"
-                            name="flightSource"
-                            required
-                            className="form-control"
-                            placeholder="Add a Flight Source"
-                            pattern="[A-Za-z]{3,}"
-                            value={this.state.flightSource}
-                            onChange={this.onChange}
-                        />
-                    </div>
 
-                    <div className="form-group">
-                        <label>Flight Destination</label> <br />
-                        <input
-                            type="text"
-                            name="flightDestination"
-                            className="form-control"
-                            placeholder="Add Destiantion"
-                            pattern="[A-Za-z]{3,}"
-                            required
-                            value={this.state.flightDestination}
-                            onChange={this.onChange}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Price per passenger</label>
-                        <br />
-                        <input
-                            type="number"
-                            name="amount"
-                            className="form-control"
-                            placeholder="Price for journey"
-                            required
-                            value={this.state.amount}
-                            onChange={this.onChange}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Flight Arrival</label> <br />
-                        <input
-                            type="text"
-                            name="flightArrival"
-                            className="form-control"
-                            placeholder="Add Arrival Time"
-                            required
-                            value={this.state.flightArrival}
-                            onChange={this.onChange}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Flight Departure</label>
-                        <br />
-                        <input
-                            type="String"
-                            name="flightDeparture"
-                            className="form-control"
-                            placeholder="Add Departure Time"
-                            required
-                            value={this.state.flightDeparture}
-                            onChange={this.onChange}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Flight Status</label>
-                        <br />
-                        <input
-                            type="text"
-                            name="flightStatus"
-                            className="form-control"
-                            placeholder="Enter pre-defined status for flight"
-                            required
-                            value={this.state.flightStatus}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                    <br />
-
-                    <button className="btn btn-primary" type="submit">
-                        Submit
+                        <button className="btn btn-primary" type="submit">
+                            Submit
               </button>
-                </form>
-                <br></br>
-                <hr></hr>
+                    </form>
+                    <br></br>
+                    <hr></hr>
+                </div>
             </div>
         );
     }
