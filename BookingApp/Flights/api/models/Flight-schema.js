@@ -8,6 +8,6 @@ const flightSchema = mongoose.Schema({
   flightArrival: { type: String, required: true },
   flightDeparture: { type: String, required: true },
   amount: { type: Number, required: true },
-  flightStatus: { type: String, required: true, default: "notArrived" }
+  flightStatus: { type: String, required: true, default: "NOT ARRIVED" }
 });
 module.exports = mongoose.model("Flight", flightSchema);

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from "react-router-dom";
-import { Dropdown } from "react-bootstrap";
+import { Button, ButtonToolbar, Dropdown } from "react-bootstrap";
 import jsPDF from "jspdf";
+import Edit from './Edit';
+import NewFlight from './NewFlight';
 
 class CheckStatus extends Component {
     constructor(props) {
@@ -11,9 +13,9 @@ class CheckStatus extends Component {
             bookData: [{}],
             token: this.props.match.params.bookid,
             isForm: false,
-            propName: "Select Value",
+            propName: "", updateValue: "SELECT VALUE",
             newValue: "",
-            isShow: false,
+            isEdit: false,
             flightData: [{}],
             source: "",
             destination: "",
@@ -24,8 +26,6 @@ class CheckStatus extends Component {
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.showSearch = this.showSearch.bind(this);
-        this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.displayRazorpay = this.displayRazorpay.bind(this);
         this.intheEnd = this.intheEnd.bind(this);
     }
@@ -100,43 +100,7 @@ class CheckStatus extends Component {
             });
     }
 
-    getaform() {
-        return (
-            <div className="container-sm " style={{ width: "28rem", textAlign: "center", alignSelf: "center", alignContent: "center" }}>
 
-                <form style={{ textAlign: "center" }} onSubmit={this.onSubmit} >
-                    <h5 className="card-title">Edit The Certain Fields</h5>
-                    <Dropdown>
-                        <Dropdown.Toggle variant="secondary" id="dropdown-basic" style={{ width: "28rem" }}>
-                            {this.state.propName}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                            <Dropdown.Item key="1" onClick={() => { this.setState({ propName: "firstname" }) }}>First Name</Dropdown.Item>
-                            <Dropdown.Item key="2" onClick={() => { this.setState({ propName: "lastname" }) }}>Last Name</Dropdown.Item>
-                            <Dropdown.Item key="3" onClick={() => { this.setState({ propName: "email" }) }}>E mail</Dropdown.Item>
-                            <Dropdown.Item key="4" onClick={() => { this.setState({ propName: "number" }) }}>Number</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <br />
-
-                    <div>
-                        <label>Enter the New Value</label>
-                        <input
-                            type="text"
-                            name="newValue"
-                            className="form-control"
-                            value={this.state.newValue}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                    <br />
-                    <button type="submit" className="btn btn-primary">
-                        Update
-    </button>
-                </form>
-            </div>);
-    }
 
     getsomething() {
         return (<div></div>);
@@ -147,91 +111,11 @@ class CheckStatus extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onSearchSubmit(e) {
-        e.preventDefault();
-        const src = this.state.source.toLowerCase();
-        const dest = this.state.destination.toLowerCase();
-
-        fetch("http://localhost:7001/flights/" + src + "/" + dest)
-            .then((response) =>
-                response.json().catch((err) => {
-                    console.err(`'${err}' happened!`);
-                    return {};
-                })
-            )
-            .then((json) => {
-                this.setState({ flightData: json });
-                this.setState({ showlists: !this.state.showlists });
-
-            })
-            .catch((err) => {
-                console.log("fetch request failed: ", err);
-            });
 
 
-    }
-
-    bookit(e) {
-
-        const Post = {
-            firstname: this.state.bookData[0].firstname,
-            lastname: this.state.bookData[0].lastname,
-            number: this.state.bookData[0].number,
-            Nationality: this.state.bookData[0].Nationality,
-            status: "BOOKED",
-            email: this.state.bookData[0].email,
-            password: this.state.bookData[0].password
-        }
-        console.log(Post);
 
 
-        fetch("http://localhost:7002/bookings/book/" + e.flightId + "/" + e.amount + "/" + this.state.bookData[0].useridentification, {
-            method: "POST",
-            headers: {
-                "content-type": "application/json",
-            },
-            body: JSON.stringify(Post),
-        })
-            .then((res) => res.json())
-            .then((rems) => {
-                console.log(rems);
-                alert(
-                    `Booked succesfully with booking ID ${rems.bookId}`
-                );
-                window.location.reload();
-            });
-    }
 
-    showflights() {
-
-        const flightList = this.state.flightData.map((flight) => (
-            <div className="card" style={{ width: "28rem" }} key={flight._id}>
-                <div className="card-body" style={{ textAlign: "center", alignContent: "center", alignItems: "center" }} key={flight._id}>
-                    <h5 className="card-title">Ticket</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">Flight ID: {flight.flightId}</h6>
-                    <p className="card-text">Flight Source: {flight.flightSource}</p>
-                    <p className="card-text">Flight Destination: {flight.flightDestination}  </p>
-                    <p className="card-text">flight Arrival: {flight.flightArrival} Flight Departure: {flight.flightDeparture} </p>
-
-
-                    <div className="d-flex justify-content-between">
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => {
-                                const a = prompt("Type confirm to continue booking");
-                                a == "CONFIRM" ? this.bookit(flight) : alert("Booking Cancelled")
-                            }}
-                        >
-                            Book
-                    </button>
-                    </div>
-                </div>
-            </div >
-        ));
-
-        return flightList;
-
-    }
 
     downloadPDF = (fly) => {
         var flightArrival = "";
@@ -263,48 +147,7 @@ class CheckStatus extends Component {
             })
     }
 
-    showSearch(e) {
 
-        return (
-            <div>
-                <form className="container-sm" style={{ textAlign: "center" }} onSubmit={this.onSearchSubmit} >
-                    <div className="card-body " style={{ width: "28rem", alignContent: "center", alignItems: "center" }}>
-                        <h5 className="card-title">Search Flight Here</h5>
-                        <div>
-                            <label>Source</label>
-                            <input
-                                type="text"
-                                name="source"
-                                placeholder="Source"
-                                value={this.state.source}
-                                className="form form-control"
-                                onChange={this.onChange}
-                            />
-                        </div>
-                        <br />
-
-                        <div>
-                            <label>Destination :</label>
-                            <input
-                                type="text"
-                                name="destination"
-                                placeholder="Destination"
-                                value={this.state.destination}
-                                className="form form-control"
-                                onChange={this.onChange}
-                            />
-                        </div>
-                        <br />
-                        <button type="submit" className="btn btn-primary" >
-                            Search
-          </button>
-                    </div>
-                </form>
-
-                {(this.state.showlists) ? this.showflights() : this.getsomething()}
-            </div>
-        )
-    }
 
     intheEnd() {
 
@@ -390,38 +233,54 @@ class CheckStatus extends Component {
 
 
         let path = "/flights";
+        let isEditModalClose = () => this.setState({ isEdit: false });
         const BookList = this.state.bookData.map((fly) => (
-            <div className="card" style={{ width: "28rem" }}>
-                <br />
-                <div key={fly._id} className="card-body" style={{ textAlign: "center", alignContent: "center", alignItems: "center" }}>
-                    <h6 className="card-subtitle mb-2 text-muted">Booking ID: {fly.bookId}</h6>
-                    <p className="card-text">Flight Number: {fly.flightID}</p>
-                    <p className="card-text">Full Name: {fly.firstname}  {fly.lastname}</p>
-                    <p className="card-text">Number: {fly.number}  Nationality: {fly.Nationality} </p>
-                    <p className="card-text">Email: {fly.email}</p>
-                    <p className="card-text">Due Amount: {fly.amount}</p>
-                    <p className="card-text">Flight Status: {fly.status}</p>
 
-                    <div className="d-flex justify-content-between">
-                        <button className="btn btn-outline-secondary" onClick={() => { this.setState({ isForm: !this.state.isForm }); this.setState({ bookId: fly.bookId }) }}> Edit</button>
-                        <button className="btn btn-outline-danger" onClick={() => {
-                            fetch("http://localhost:7002/bookings/book/" + fly.bookId, { method: "DELETE" }).then((e) => e.json()).then((rems) => {
-                                console.log(rems); alert(`message : ${rems.message}`)
-                                window.location.reload();
-                            })
-                                .catch((err) => { console.log(err); alert(`error occured ${err}`) })
-                        }}> Delete</button>
-                        <div>{fly.amount !== 0 ? (<button className="btn btn-outline-primary" onClick={() => {
-                            this.displayRazorpay(fly);
-                        }} > Pay</button>) : <div />}</div>
-                        <div>{fly.amount === 0 ? (<button className="btn btn-outline-success" onClick={() => {
-                            this.downloadPDF(fly);
-                        }}>download</button>) : <div />}</div>
-                    </div>
 
-                </div>
+            <tr key={fly._id}>
+                <td>{fly.bookId}</td>
+                <td> {fly.firstname}  {fly.lastname}</td>
+                <td> {fly.flightID}</td>
+                <td> {fly.number} </td>
+                <td> {fly.Nationality} </td>
+                <td> {fly.email}</td>
+                <td> {fly.amount}</td>
+                <td> {fly.status}</td>
+                <td>
+                    <ButtonToolbar>
+                        <Button
+                            variant="outline-primary"
+                            onClick={() => { this.setState({ isEdit: true }); this.setState({ bookId: fly.bookId }); }}
+                        ><img src={require("../../trash/edit.png")} className="rounded" style={{ height: "3vh", width: "3vh" }} /></Button>
 
-            </div >
+                        <Edit
+                            show={this.state.isEdit}
+                            onHide={isEditModalClose}
+                            tokeen={this.props.match.params.token}
+                            bookid={this.state.bookId}
+                        />
+                    </ButtonToolbar>
+                </td>
+                <td className="btn" style={{ textAlign: "center", alignContent: "center" }} onClick={() => {
+                    fetch("http://localhost:7002/bookings/book/" + fly.bookId, { method: "DELETE" }).then((e) => e.json()).then((rems) => {
+                        console.log(rems); alert(`message : ${rems.message}`)
+                        window.location.reload();
+                    })
+                        .catch((err) => { console.log(err); alert(`error occured ${err}`) })
+                }}> <img src={require("../../trash/delete.png")} className="rounded" style={{ height: "5vh", width: "5vh" }} /> </td>
+
+                <td>{fly.amount !== 0 ? (<button className="btn btn-outline-primary" onClick={() => {
+                    this.displayRazorpay(fly);
+                }} > Pay</button>) : <div />}</td>
+
+                <td>{fly.amount === 0 ? (<button className="btn btn-outline-success" onClick={() => {
+                    this.downloadPDF(fly);
+                }}><img src={require("../../trash/download.png")} className="rounded" style={{ height: "3vh", width: "3vh" }} /></button>) : <div />}</td>
+
+
+            </tr>
+
+
 
         ));
 
@@ -437,35 +296,61 @@ class CheckStatus extends Component {
                 <td></td>
             </tr>
         ));
-
+        let isFormModalClose = () => this.setState({ isForm: false });
         return (
-            <div className="container-sm w-90">
+            <div >
 
                 <hr />
                 <div className="d-flex justify-content-between" >
-                    <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={() => { this.setState({ isShow: !this.state.isShow }) }} >Book New Journey</button>
+
+                    {/* <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={() => {
+                         this.setState({ isShow: !this.state.isShow }) 
+                         }} >Book New Journey</button> */}
+                    <ButtonToolbar>
+                        <Button
+                            variant="outline-primary"
+                            onClick={() => { this.setState({ isForm: true }); }}
+                        >New Journey</Button>
+
+                        <NewFlight
+                            show={this.state.isForm}
+                            onHide={isFormModalClose}
+                            tokeen={this.props.match.params.token}
+                            bookdata={this.state.bookData}
+                        />
+                    </ButtonToolbar>
                     <h4 style={{ margin: "10px 10px" }}>Welcome {this.state.bookData[0].firstname}</h4>
                     <button className="btn btn-outline-danger" style={{ margin: "10px 10px" }} onClick={() => { this.setState({ token: "" }); this.props.history.push(path); }} >Logout</button>
                 </div>
                 <hr />
-                <div className="d-flex justify-between">
-                    <div className="container-sm" >
-                        <br />
-                        <h4 style={{ textJustify: 'auto' }}>Your Bookings</h4>
-                        <br />
-                        {BookList}
-                    </div>
+                <h4 style={{ textJustify: 'auto' }}>Your Bookings</h4>
+                <table className="table table-hover container-sm">
+                    <thead>
+                        <tr>
+                            <td>Booking ID</td>
+                            <td> Name</td>
+                            <td> Flight ID</td>
+                            <td> Number </td>
+                            <td> Nationality </td>
+                            <td> Email</td>
+                            <td> Due Amount</td>
+                            <td> Status</td>
+                            <td>Edit</td>
+                            <td>Delete</td>
+                            <td>Pay</td>
+                            <td>Download</td>
+                        </tr>
+                    </thead>
+                    <tbody>{BookList}</tbody>
+                </table>
 
-                    <div>
-                        <div style={{ textAlign: "center" }}>{this.state.isForm ? this.getaform() : this.getsomething()}</div>
-                    </div>
 
-                    <div>
+
+                {/* ----------------------make search component <div>
                         <div style={{ textAlign: "center" }}>{this.state.isShow ? this.showSearch() : this.getsomething()}</div>
-                    </div>
+                    </div> */}
 
-                    <hr />
-                </div>
+
                 <hr />
                 <h5 style={{ textAlign: "center" }}>Available Flights</h5>
                 <hr />

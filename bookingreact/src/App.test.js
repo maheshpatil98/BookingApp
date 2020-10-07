@@ -111,10 +111,4 @@ describe('Testing router', () => {
 })
 
 
-/**
-          <Route path="/book/:id/:amt" children={<Booking />} />
-
-          <Route path="/search/:token/:name" children={<SearchId />} />
-
-          <Route path="/addflight/:id/:name" children={<AddFlight />} /> */
 

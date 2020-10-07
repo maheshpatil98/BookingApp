@@ -39,6 +39,40 @@ route.post('/verification', (req, res) => {
 })
 
 
+route.get('/getdata', (req, res, next) => {
+    PayDetails.find()
+        .exec()
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err,
+            });
+        });
+});
+
+
+route.delete("/:id", (req, res, next) => {
+    const id = req.params.id;
+    PayDetails.findByIdAndDelete(id)
+        .exec()
+        .then((doc) => {
+            console.log("deleted succesfully");
+            res.status(200).json({
+                message: "deleted",
+                count: doc.deletedCount,
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err,
+            });
+        });
+});
+
 
 route.post('/razorpay/:amount', async (req, res, next) => {
     const payment_capture = 1

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
-import { Dropdown } from "react-bootstrap";
+import { Button, ButtonToolbar, Dropdown } from "react-bootstrap";
+import PayDetails from './PayDetails';
+import Edit from './Edit';
 
 class BookingsInFlight extends Component {
 
@@ -12,11 +14,13 @@ class BookingsInFlight extends Component {
             tokenn: this.props.match.params.id,
             isForm: false,
             propName: "Select Value",
+            updateValue: "",
             newValue: "",
-            bookId: ""
+            bookId: "",
+            dataa: [],
+            payModalShow: false
         };
-        this.onSubmit = this.onSubmit.bind(this);
-        this.onChange = this.onChange.bind(this);
+
     }
 
     onChange(e) {
@@ -60,79 +64,27 @@ class BookingsInFlight extends Component {
                 })
             )
             .then((json) => {
-                console.log("parsed json: ", json);
-                console.log(this.state.bookData);
+
                 this.setState({ bookData: json.passengers });
                 console.log(this.state.bookData);
             })
             .catch((err) => {
                 console.log("fetch request failed: ", err);
             });
-    }
 
-    onSubmit(flight) {
-        const Post = [{
-            propName: this.state.propName,
-            value: this.state.newValue
-        }]
-
-        fetch("http://localhost:7002/bookings/" + this.state.bookId, {
-            method: "PATCH",
-            headers: {
-                "content-type": "application/json",
-                "Authorization": "Bearer " + this.state.tokenn
-            },
-            body: JSON.stringify(Post)
-        })
-            .then((dat) => {
-                console.log(dat);
-                alert("Data Updated Successfully");
-                this.setState({ bookId: "" });
-                window.location.reload();
+        fetch("http://localhost:7003/pay/getdata")
+            .then(tab => tab.json())
+            .then((json) => {
+                this.setState({ dataa: json });
             })
             .catch((err) => {
-                console.log(err);
-            })
+                console.log("fetch request failed: ", err);
+            });
     }
 
-    getaform() {
-        return (
-            <div className="container-sm " style={{ width: "28rem" }}>
-                <br /><hr />
-                <form style={{ textAlign: "center" }} onSubmit={this.onSubmit} >
-                    <h5 className="card-title">Edit The Certain Fields</h5>
-                    <Dropdown>
-                        <Dropdown.Toggle variant="light" id="dropdown-basic">
-                            {this.state.propName}
-                        </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "firstname" }); }}>First Name</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "lastname" }) }}>Last Name</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "email" }) }}>E mail</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "number" }) }}>Number</Dropdown.Item>
-                            <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "status" }) }}>Status</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <br />
 
-                    <div>
-                        <label>Enter the New Value</label>
-                        <input
-                            type="text"
-                            name="newValue"
-                            className="form-control"
-                            value={this.state.newValue}
-                            onChange={this.onChange}
-                        />
-                    </div>
-                    <br />
-                    <button type="submit" className="btn btn-primary">
-                        Update
-    </button>
-                </form>
-            </div>);
-    }
+
 
     getsomething() {
         return (<div></div>);
@@ -140,43 +92,92 @@ class BookingsInFlight extends Component {
     render() {
 
         let path = "/search/" + this.state.tokenn + "/" + this.props.match.params.name;
-
+        let editModalClose = () => this.setState({ isForm: false });
 
         const BookList = this.state.bookData.map((fly) => (
-            <div className="card" style={{ width: "28rem" }}>
-                <div className="card-body " style={{ textAlign: "center", alignContent: "center", alignItems: "center" }}>
-                    <h5 className="card-title">Flight Number: {fly.flightID}</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">Booking ID: {fly.bookId}</h6>
-                    <p className="card-text">Email: {fly.email}   Nationality: {fly.Nationality}</p>
-                    <p className="card-text">Full Name: {fly.firstname}  {fly.lastname}</p>
-                    <p className="card-text">Flight Status: {fly.status}</p>
 
-                    <div className="d-flex justify-content-between">
-                        <button className="btn btn-primary" onClick={() => { this.setState({ isForm: !this.state.isForm }); this.setState({ bookId: fly.bookId }) }}> Edit</button>
-                        <button className="btn btn-danger" onClick={() => this.routeChangeDelete(fly)}> Delete</button>
-                    </div>
+            <tr key={fly._id}>
+                <td> {fly.bookId}</td>
+                <td> {fly.firstname}  {fly.lastname}</td>
+                <td>{fly.flightID}</td>
+                <td> {fly.email} </td>
+                <td>{fly.Nationality}</td>
+                <td> {fly.status}</td>
+                <td>{fly.amount}</td>
+                <td>
 
-                </div>
-                <br />
-            </div>
+                    <ButtonToolbar>
+                        <Button
+                            variant="outline-secondary"
+                            onClick={() => {
+                                this.setState({ isForm: true });
+                                this.setState({ bookId: fly.bookId });
+                            }}
+                        >Update</Button>
+
+                        <Edit
+                            show={this.state.isForm}
+                            onHide={editModalClose}
+                            tokeen={this.props.match.params.token}
+                            bookid={this.state.bookId}
+                        />
+                    </ButtonToolbar>
+                </td>
+                <td className="btn btn-outline-danger" onClick={() => this.routeChangeDelete(fly)}>
+                    Delete</td>
+            </tr>
+
+
         ));
 
+
+
+
+        let addModalClose = () => this.setState({ payModalShow: false });
         return (
             <div>
                 <hr />
-                <div>
+                <div className="d-flex justify-content-between">
                     <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={() => { this.props.history.push(path); }}>Back</button>
+                    <ButtonToolbar>
+                        <Button
+                            variant="outline-success"
+                            onClick={() => { this.setState({ payModalShow: true }); }}
+                        >Show Payment Details</Button>
+
+                        <PayDetails
+                            show={this.state.payModalShow}
+                            onHide={addModalClose}
+                            tokeen={this.props.match.params.token}
+                            data={this.state.dataa}
+                        />
+                    </ButtonToolbar>
                 </div>
                 <hr />
-                <div className="container-sm w-90 d-flex justify-content-between">
-                    <div>
-                        <h5 style={{ textAlign: "center" }}>All Users</h5><br />
+
+                <div>
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <td>Booking ID</td>
+                                <td>Name</td>
+                                <td>Flight</td>
+                                <td>Mail</td>
+                                <td>Nationality</td>
+                                <td>Status</td>
+                                <td>Due Amount</td>
+                                <td>Edit</td>
+                                <td>Delete</td>
+                            </tr>
+                        </thead>
                         <tbody>{BookList}</tbody>
-                    </div>
-                    <div>
-                        <div style={{ textAlign: "center" }}>{this.state.isForm ? this.getaform() : this.getsomething()}</div>
-                    </div>
+                    </table>
                 </div>
+
+                {/* <div>
+                        <div style={{ textAlign: "center" }}>{this.state.isForm ? this.getaform() : this.getsomething()}</div>
+                    </div> */}
+
             </div>
         )
     }

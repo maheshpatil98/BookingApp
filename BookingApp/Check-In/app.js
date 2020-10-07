@@ -31,6 +31,32 @@ app.use((req, res, next) => {
     }
     next();
 })
+
+
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            version: "1.0.0",
+            title: "Check-In API",
+            description: "Check-In API Information",
+            contact: {
+                name: "Mahesh Patil"
+            },
+            servers: ["http://localhost:7003"]
+        }
+    },
+    // ['.routes/*.js']
+    apis: ['./routers/*.js']
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
 app.use("/users", userRoute);
 app.use("/flights", flightRoute);
 app.use("/pay", payRoute);

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import moment from "moment";
+import { GoogleLogin } from "react-google-login";
+import Flight from "./Flight";
 
 class Booking extends Component {
   constructor(props) {
@@ -65,7 +65,19 @@ class Booking extends Component {
       });
   }
 
+
+
+
   render() {
+
+    const responseSuccessGoogle = (response) => {
+      console.log(response);
+    }
+
+    const responseErrorGoogle = (response) => {
+
+    }
+
     return (
 
       // <div className="container-sm w-25">
@@ -169,13 +181,24 @@ class Booking extends Component {
             </div>
             <br />
 
-            <button className="btn btn-primary" type="submit">
-              Submit
+            <div className="d-flex justify-content-between">
+              <button className="btn btn-primary" type="submit">
+                Submit
           </button>
+
+              <div><GoogleLogin
+                clientId="202410087490-282ont8hp7rojdt2b0cpnksn2oo043mf.apps.googleusercontent.com"
+                buttonText="Login with google"
+                onSuccess={responseSuccessGoogle}
+                onFailure={responseErrorGoogle}
+                cookiePolicy={'single_host_origin'}
+              /></div>
+            </div>
           </div>
         </form>
         <br></br>
         <hr></hr>
+
       </div>
     );
   }

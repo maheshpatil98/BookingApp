@@ -30,6 +30,7 @@ route.get("/", (req, res, next) => {
             firstname: doc.firstname,
             lastname: doc.lastname,
             number: doc.number,
+            amount: doc.amount,
             email: doc.email,
             Nationality: doc.Nationality,
             bookId: doc.bookId,

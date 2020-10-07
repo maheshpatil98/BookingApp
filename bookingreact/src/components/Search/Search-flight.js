@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Button, ButtonToolbar, Form } from "react-bootstrap";
+import AddFlight from "../Admin/AddFlight";
+import Update from "./Update";
+import { connect } from "react-redux";
+import { fetchFlights, deleteFlight, addflight } from "../../actions/postAction";
 
 class SearchId extends Component {
   constructor(props) {
@@ -8,10 +12,14 @@ class SearchId extends Component {
 
     this.state = {
       flightId: "",
-      data: [{}], dataa: "",
+      data: [], dataa: "",
       tokenn: this.props.match.params.token,
       updateForm: false,
-      updateId: "", propName: "Select Value",
+      updateId: "",
+      addModalShow: false,
+      updateModalShow: false,
+      updateValue: "Select Value",
+      propName: "Select Value",
       newValue: "", sortForm: false,
       criteria1: "", criteria2: "",
       ord1: "", ord2: ""
@@ -24,9 +32,9 @@ class SearchId extends Component {
     this.routeChangeDelete = this.routeChangeDelete.bind(this);
     this.goingToBookers = this.goingToBookers.bind(this);
     this.routeChangeUpdate = this.routeChangeUpdate.bind(this);
-    this.onUpdateSubmit = this.onUpdateSubmit.bind(this);
+
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
-    this.goingToSort = this.goingToSort.bind(this);
+
   }
 
   onChange(e) {
@@ -50,40 +58,33 @@ class SearchId extends Component {
   }
 
   componentWillMount() {
-    fetch("http://localhost:7001/flights/")
-      .then((response) =>
-        response.json().catch((err) => {
-          console.err(`'${err}' happened!`);
-          return {};
-        })
-      )
-      .then((json) => {
-        console.log("parsed json: ", json);
 
-        this.setState({ data: json });
-      })
-      .catch((err) => {
-        console.log("fetch request failed: ", err);
-      });
+    this.props.fetchFlights();
+    this.setState({ data: this.props.flightData })
+
   }
 
+  // componentWillReceiveProps(newProps) {
+  //   if (newProps.delete.message !== undefined) {
+  //     console.log(this.props.delete.message);
+  //     alert("Deleted Sucesfully");
+  //   }
+  //   else {
+  //     console.log(newProps);
+  //   }
+  // }
+
   routeChangeDelete(flight) {
-    console.log(flight.flightId);
-    fetch("http://localhost:7003/flights/" + flight.flightId, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": "Bearer " + this.state.tokenn
-      }
-    })
-      .then((dat) => {
-        console.log(dat);
-        alert("Data deleted Successfully");
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+    try {
+      this.props.deleteFlight(flight, this.state.tokenn);
+      alert("Deleted Succesfully");
+      window.location.reload();
+    }
+    catch (err) {
+      console.log(err);
+      alert("Error Occured" + err);
+      window.location.reload();
+    }
   }
 
   onSubmit(e) {
@@ -105,45 +106,45 @@ class SearchId extends Component {
   }
 
 
-  onUpdateSubmit() {
-    const Post = [{
-      propName: this.state.propName,
-      value: this.state.newValue
-    }]
+  // onUpdateSubmit() {
+  //   const Post = [{
+  //     propName: this.state.propName,
+  //     value: this.state.newValue
+  //   }]
 
-    fetch("http://localhost:7001/flights/" + this.state.updateId, {
-      method: "PATCH",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": "Bearer " + this.state.tokenn
-      },
-      body: JSON.stringify(Post)
-    })
-      .then((dat) => {
-        alert("Data Updated Successfully");
-        console.log(dat);
-        this.setState({ bookId: "", propName: "", newValue: "" });
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  }
+  //   fetch("http://localhost:7001/flights/" + this.state.updateId, {
+  //     method: "PATCH",
+  //     headers: {
+  //       "content-type": "application/json",
+  //       "Authorization": "Bearer " + this.state.tokenn
+  //     },
+  //     body: JSON.stringify(Post)
+  //   })
+  //     .then((dat) => {
+  //       alert("Data Updated Successfully");
+  //       console.log(dat);
+  //       this.setState({ bookId: "", propName: "", newValue: "" });
+  //       window.location.reload();
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     })
+  // }
 
   routeChangeUpdate(fly) {
     return (<form className="d-flex justify-content-between w-90" style={{ width: "70rem" }} onSubmit={this.onUpdateSubmit} >
       <Dropdown >
         <Dropdown.Toggle variant="light" id="dropdown-basic" style={{ width: "17rem" }}>
-          {this.state.propName}
+          {this.state.updateValue}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightSource" }) }}>Source</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightDestination" }) }}>Destination</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightArrival" }) }}>Arrival</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightDeparture" }) }}>Departure</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "flightStatus" }) }}>Status</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ propName: "" }); this.setState({ propName: "amount" }) }}>amount</Dropdown.Item>
+          <Dropdown.Item onClick={() => { this.setState({ updateValue: "Source" }); this.setState({ propName: "flightSource" }) }}>Source</Dropdown.Item>
+          <Dropdown.Item onClick={() => { this.setState({ updateValue: "Destination" }); this.setState({ propName: "flightDestination" }) }}>Destination</Dropdown.Item>
+          <Dropdown.Item onClick={() => { this.setState({ updateValue: "Arrival" }); this.setState({ propName: "flightArrival" }) }}>Arrival</Dropdown.Item>
+          <Dropdown.Item onClick={() => { this.setState({ updateValue: "Departure" }); this.setState({ propName: "flightDeparture" }) }}>Departure</Dropdown.Item>
+          <Dropdown.Item onClick={() => { this.setState({ updateValue: "Status" }); this.setState({ propName: "flightStatus" }) }}>Status</Dropdown.Item>
+          <Dropdown.Item onClick={() => { this.setState({ updateValue: "Amount" }); this.setState({ propName: "amount" }) }}>amount</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
 
@@ -197,64 +198,13 @@ class SearchId extends Component {
   }
 
 
-
-
-  goingToSort() {
-    this.setState({ sortForm: !this.state.sortForm });
-  }
-  routeSort() {
-    return (<form className="d-flex justify-content-between" style={{ width: "55rem" }} onSubmit={this.onSearchSubmit} >
-      <Dropdown >
-        <Dropdown.Toggle variant="light" id="dropdown-basic">
-          Select the 1st Value to Sort
-          </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => { this.setState({ criteria1: "" }) }}>Null</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ criteria1: "flightSource" }) }}>Source</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ criteria1: "flightDestinaion" }) }}>Destination</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ criteria1: "flightArrival" }) }}>Arrival</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ criteria1: "flightDeparture" }) }}>Departure</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ criteria1: "flightStatus" }) }}>Status</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-
-      <Dropdown >
-        <Dropdown.Toggle variant="light" id="dropdown-basic">
-          Criteria 1
-          </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => { this.setState({ ord1: "" }) }}>Null</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ ord1: '1' }) }}>Ascending</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ ord1: '-1' }) }}>Descending</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-
-      <Dropdown >
-        <Dropdown.Toggle variant="light" id="dropdown-basic">
-          Criteria 2
-          </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => { this.setState({ ord2: 0 }) }}>Null</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ ord2: 1 }) }}>Ascending</Dropdown.Item>
-          <Dropdown.Item onClick={() => { this.setState({ ord2: -1 }) }}>Descending</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-
-      <button type="submit" className="btn btn-primary">
-        Sort
-</button>
-    </form>)
-  }
-
-
-
   render() {
 
-    const flightList = this.state.data.map((pass) => (
-      <tr key={pass._id}>
+    let updateModalClose = () => this.setState({ updateModalShow: false });
+    let addModalClose = () => this.setState({ addModalShow: false });
+    //console.log(this.props.flightData);
+    const flightList = this.props.flightData.flights.map((pass) => (
+      <tr key={pass.flightId}>
         <td>{pass.flightId}</td>
         <td>{pass.flightSource}</td>
         <td>{pass.flightDestination}</td>
@@ -271,16 +221,28 @@ class SearchId extends Component {
           </button>
         </td>
         <td>
-          <button
+          {/* <button
             className="btn btn-secondary"
             onClick={() => { this.setState({ updateForm: !this.state.updateForm }); this.setState({ updateId: pass.flightId }); }}
           >
             Update
-          </button>
+          </button> */}
+          <ButtonToolbar>
+            <Button
+              variant="outline-secondary"
+              onClick={() => { this.setState({ updateId: pass.flightId }); this.setState({ updateModalShow: true }); }}
+            >Update</Button>
+
+            <Update
+              show={this.state.updateModalShow}
+              onHide={updateModalClose}
+              tokeen={this.props.match.params.token}
+              flightid={this.state.updateId}
+            />
+          </ButtonToolbar>
         </td>
       </tr>
     ));
-
 
 
 
@@ -288,7 +250,19 @@ class SearchId extends Component {
       <div>
         <hr />
         <div className="d-flex justify-content-between">
-          <div><button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={this.goingToAdd} >Add Flight</button>
+          <div className="d-flex justify-content-between">
+            <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={this.goingToAdd} >Add Flight</button>
+            {/* <ButtonToolbar>
+              <Button
+                variant="outline-primary"
+                onClick={() => this.setState({ addModalShow: true })}
+              >Add Flight</Button>
+
+              <AddFlight
+                show={this.state.addModalShow}
+                onHide={addModalClose}
+              />
+            </ButtonToolbar> */}
             <button className="btn btn-outline-primary" style={{ margin: "10px 10px" }} onClick={this.goingToBookers}>Bookers</button></div>
           <h4 style={{ margin: "10px 10px", textAlign: "center" }}>Welcome {this.props.match.params.name}</h4>
           <button className="btn btn-outline-warning" style={{ margin: "10px 10px" }} onClick={this.goingToLogout}><b>Logout</b></button>
@@ -314,14 +288,7 @@ class SearchId extends Component {
           </button>
           </form>
 
-          <hr />
           <div>
-            <div>
-              {this.state.updateForm ? this.routeChangeUpdate() : this.defaultview()}
-            </div>
-            <div>
-              {this.state.sortForm ? this.routeSort() : this.defaultview()}
-            </div>
             <div className="container-m">
               <table className="table table-hover">
                 <thead>
@@ -372,38 +339,11 @@ class SearchId extends Component {
   }
 }
 
-export default withRouter(SearchId);
+const mapStateToProps = state => ({
+  flightData: state.posts,
+  newFlight: state.posts.flight,
+  delete: state.posts.delete
+})
+export default connect(mapStateToProps, { fetchFlights, deleteFlight, addflight })(withRouter(SearchId));
 
-/**
- *  <table className="table table-hover">
-              <thead>
-                <tr>
-                  <td> <button className="btn btn-outline-secondary" style={{ width: "10rem", height: "4rem", margin: "10px 10px" }} onClick={() => {
-                    this.setState({ data: this.state.data.sort((a, b) => (a.flightId > b.flightId ? 1 : -1)) })
-                  }}>flightId</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightSource > b.flightSource ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Flight Source</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightDestination > b.flightDestination ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Flight Destination</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightArrival > b.flightArrival ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Flight Arrival</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightDeparture > b.flightDeparture ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Flight Departure</button></td>
-                  <td><button className="btn btn-outline-secondary" style={{ margin: "10px 10px" }} onClick={() => {
-                    const a = this.state.data.sort((a, b) => (a.flightStatus > b.flightStatus ? 1 : -1));
-                    this.setState({ data: a });
-                  }}>Flight Status</button></td>
-                  <td></td>
-                </tr>
-              </thead>
-              <tbody>{flightList}</tbody>
-            </table>
- */
+

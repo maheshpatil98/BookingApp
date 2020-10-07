@@ -1,0 +1,5 @@
+export const FETCH_FLIGHTS = 'FETCH_FLIGHTS';
+export const POST_FLIGHT = 'POST_FLIGHT';
+export const DELETE_FLIGHT = 'DELETE_FLIGHT';
+export const UPDATE_FLIGHT = 'UPDATE_FLIGHT';
+export const SEARCH_FLIGHT = 'SEARCH_FLIGHT';

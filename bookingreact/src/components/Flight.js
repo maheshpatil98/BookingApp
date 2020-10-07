@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { withRouter, NavLink } from "react-router-dom";
 import { Nav } from "react-bootstrap";
+import { connect } from "react-redux";
+import { fetchFlights } from "../actions/postAction";
+
 
 class Flight extends Component {
   constructor(props) {
@@ -9,7 +12,6 @@ class Flight extends Component {
     this.state = {
       source: "",
       destination: "",
-      flightData: [],
       email: "",
       password: ""
     };
@@ -24,20 +26,8 @@ class Flight extends Component {
   }
 
   componentWillMount() {
-    fetch("http://localhost:7003/flights/getflights")
-      .then((response) =>
-        response.json().catch((err) => {
-          console.err(`'${err}' happened!`);
-          return {};
-        })
-      )
-      .then((json) => {
-        console.log("parsed json: ", json);
-        this.setState({ flightData: json });
-      })
-      .catch((err) => {
-        console.log("fetch request failed: ", err);
-      });
+    console.log(this.props);
+    this.props.fetchFlights();
   }
   //remaining
   routeChange = (e) => {
@@ -100,7 +90,7 @@ class Flight extends Component {
   }
 
   render() {
-    const flightList = this.state.flightData.map((flight) => (
+    const flightList = this.props.flightData.flights.map((flight) => (
       <tr key={flight._id}>
         <td>{flight.flightId}</td>
         <td>{flight.flightSource}</td>
@@ -208,6 +198,8 @@ class Flight extends Component {
           </div>
         </div>
         <hr />
+        <h4 style={{ textAlign: "center" }}>All Flights</h4>
+        <hr />
         <div>
           <table className="table table-hover">
             <thead>
@@ -232,7 +224,7 @@ class Flight extends Component {
             <NavLink to="/signup" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Signup</NavLink>
             <NavLink to="/login" className="btn btn-outline-primary" style={{ margin: "5px 5px" }} >Login</NavLink>
 
-            <p>All Terms and Conditions Apply*</p>
+
           </div>
 
         </div>
@@ -240,4 +232,8 @@ class Flight extends Component {
     );
   }
 }
-export default withRouter(Flight);
+
+const mapStateToProps = state => ({
+  flightData: state.posts
+})
+export default connect(mapStateToProps, { fetchFlights })(withRouter(Flight));

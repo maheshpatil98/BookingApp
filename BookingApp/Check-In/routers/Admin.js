@@ -7,7 +7,7 @@ route.get("/getflights", (req, res, next) => {
   Axios.get("http://localhost:7001/flights/")
     .then((result) => {
       res.status(200).json(result.data);
-      console.log(result.data);
+      //console.log(result.data);
     })
     .catch((err) => {
       console.log(err);
@@ -17,7 +17,8 @@ route.get("/getflights", (req, res, next) => {
     });
 });
 
-route.post("/addflight", auth, (req, res, next) => {
+route.post("/addflight", (req, res, next) => {
+
   const flight = {
     flightSource: req.body.flightSource,
     flightDestination: req.body.flightDestination,
@@ -26,6 +27,7 @@ route.post("/addflight", auth, (req, res, next) => {
     amount: req.body.amount,
     flightStatus: req.body.flightStatus
   };
+  console.log("check-in is working " + flight);
   Axios.post("http://localhost:7001/flights/", flight)
     .then((result) => {
       console.log(result.data);

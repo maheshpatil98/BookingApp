@@ -17,7 +17,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.0",
     "razorpay": "^2.0.6",
-    "shortid": "^2.2.15"
+    "shortid": "^2.2.15",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
